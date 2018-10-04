@@ -13,7 +13,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 class Post
 {
     /**
-     * @Groups({"list", "details"})
+     * @Groups({"post_list", "post_details"})
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
@@ -21,21 +21,28 @@ class Post
     private $id;
 
     /**
-     * @Groups({"list", "details"})
+     * @Groups({"post_list", "post_details"})
      * @ORM\Column(type="string", length=255)
      */
     private $title;
 
     /**
-     * @Groups({"details"})
+     * @Groups({"post_details"})
      * @ORM\Column(type="text")
      */
     private $article;
 
     /**
+     * @Groups({"post_list", "post_details"})
      * @ORM\Column(type="datetime")
      */
     private $createdAt;
+
+    /**
+     * @Groups({"category_list", "category_details"})
+     * @ORM\ManyToOne(targetEntity="App\Entity\Category", inversedBy="posts")
+     */
+    private $category;
 
     /**
      * @param CreatePostRequest $dto
@@ -49,7 +56,8 @@ class Post
         $post
             ->setTitle($dto->title)
             ->setCreatedAt($dto->createdAt)
-            ->setArticle($dto->article);
+            ->setArticle($dto->article)
+            ->setCategory($dto->category);
 
         return $post;
     }
@@ -63,7 +71,8 @@ class Post
     {
         $this
             ->setTitle($dto->title)
-            ->setArticle($dto->article);
+            ->setArticle($dto->article)
+            ->setCategory($dto->category);
 
         return $this;
     }
@@ -132,6 +141,18 @@ class Post
     public function setCreatedAt(\DateTimeInterface $createdAt): self
     {
         $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    public function getCategory(): ?Category
+    {
+        return $this->category;
+    }
+
+    public function setCategory(?Category $category): self
+    {
+        $this->category = $category;
 
         return $this;
     }

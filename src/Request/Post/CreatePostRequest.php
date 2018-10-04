@@ -2,11 +2,16 @@
 
 namespace App\Request\Post;
 
+use App\Entity\Category;
 use App\Request\RequestObject;
 use Symfony\Component\Validator\Constraints as Assert;
 
 class CreatePostRequest extends RequestObject
 {
+    public const RELATIONS = [
+        'category' => Category::class
+    ];
+
     /**
      * @Assert\NotBlank()
      * @Assert\Length(max=255)
@@ -23,6 +28,11 @@ class CreatePostRequest extends RequestObject
      * @Assert\DateTime()
      */
     public $createdAt;
+
+    /**
+     * @Assert\Valid()
+     */
+    public $category;
 
     public function __construct()
     {

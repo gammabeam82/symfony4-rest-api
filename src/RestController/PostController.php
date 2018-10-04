@@ -20,6 +20,7 @@ class PostController extends FOSRestController
 {
     /**
      * @Rest\Post("/", name="create_post")
+     * @Rest\View(serializerGroups={"post_details", "category_list"})
      *
      * @param CreatePostRequest $postRequest
      * @param PostService $service
@@ -35,6 +36,7 @@ class PostController extends FOSRestController
 
     /**
      * @Rest\Put("/{id}", name="update_post")
+     * @Rest\View(serializerGroups={"post_details", "category_list"})
      * @ParamConverter("post", class="App:Post")
      *
      * @param UpdatePostRequest $postRequest
@@ -52,7 +54,7 @@ class PostController extends FOSRestController
 
     /**
      * @Rest\Get("/{id}", name="get_single_post")
-     * @Rest\View(serializerGroups={"details"})
+     * @Rest\View(serializerGroups={"post_details", "category_list"})
      * @ParamConverter("post", class="App:Post")
      *
      * @param Post $post
@@ -66,7 +68,7 @@ class PostController extends FOSRestController
 
     /**
      * @Rest\Delete("/{id}", name="delete_post")
-     * @Rest\View(serializerGroups={"list"})
+     * @Rest\View(serializerGroups={"post_list"})
      * @ParamConverter("post", class="App:Post")
      *
      * @param Post $post
@@ -83,7 +85,7 @@ class PostController extends FOSRestController
 
     /**
      * @Rest\Get("/", name="get_all_posts")
-     * @Rest\View(serializerGroups={"list"})
+     * @Rest\View(serializerGroups={"post_list", "category_list"})
      *
      * @param PostService $service
      *

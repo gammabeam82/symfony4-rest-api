@@ -2,9 +2,12 @@
 
 namespace App\ArgumentResolver;
 
+use App\Event\RequestObjectEvent;
+use App\Events;
 use App\Exception\InvalidRequestException;
 use App\Request\RequestObject;
 use Generator;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Controller\ArgumentValueResolverInterface;
 use Symfony\Component\HttpKernel\ControllerMetadata\ArgumentMetadata;
@@ -24,16 +27,22 @@ class RequestObjectResolver implements ArgumentValueResolverInterface
     private $validator;
 
     /**
+     * @var EventDispatcherInterface
+     */
+    private $dispatcher;
+
+    /**
      * RequestObjectResolver constructor.
      *
      * @param DenormalizerInterface $denormalizer
      * @param ValidatorInterface $validator
-     *
+     * @param EventDispatcherInterface $dispatcher
      */
-    public function __construct(DenormalizerInterface $denormalizer, ValidatorInterface $validator)
+    public function __construct(DenormalizerInterface $denormalizer, ValidatorInterface $validator, EventDispatcherInterface $dispatcher)
     {
         $this->denormalizer = $denormalizer;
         $this->validator = $validator;
+        $this->dispatcher = $dispatcher;
     }
 
     /**
@@ -63,6 +72,11 @@ class RequestObjectResolver implements ArgumentValueResolverInterface
 
         /** @var RequestObject $dto */
         $dto = $this->denormalizer->denormalize($data, $argument->getType());
+
+        if(0 !== count($dto->getRelations())) {
+            $this->dispatcher->dispatch(Events::REQUEST_OBJECT_EVENT, new RequestObjectEvent($dto));
+        }
+
         $this->validateDTO($dto);
 
         yield $dto;
