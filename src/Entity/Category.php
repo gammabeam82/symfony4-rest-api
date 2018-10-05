@@ -24,7 +24,7 @@ class Category
 
     /**
      * @Groups({"category_list", "category_details"})
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, unique=true)
      */
     private $name;
 

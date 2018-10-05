@@ -73,9 +73,7 @@ class RequestObjectResolver implements ArgumentValueResolverInterface
         /** @var RequestObject $dto */
         $dto = $this->denormalizer->denormalize($data, $argument->getType());
 
-        if(0 !== count($dto->getRelations())) {
-            $this->dispatcher->dispatch(Events::REQUEST_OBJECT_EVENT, new RequestObjectEvent($dto));
-        }
+        $this->dispatcher->dispatch(Events::REQUEST_OBJECT_EVENT, new RequestObjectEvent($dto));
 
         $this->validateDTO($dto);
 
