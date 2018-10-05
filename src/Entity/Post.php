@@ -13,7 +13,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 class Post
 {
     /**
-     * @Groups({"post_list", "post_details"})
+     * @Groups({"post_list", "post_details", "category_details"})
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
@@ -21,7 +21,7 @@ class Post
     private $id;
 
     /**
-     * @Groups({"post_list", "post_details"})
+     * @Groups({"post_list", "post_details", "category_details"})
      * @ORM\Column(type="string", length=255)
      */
     private $title;
@@ -39,7 +39,7 @@ class Post
     private $createdAt;
 
     /**
-     * @Groups({"category_list", "category_details"})
+     * @Groups({"post_list", "post_details"})
      * @ORM\ManyToOne(targetEntity="App\Entity\Category", inversedBy="posts")
      */
     private $category;

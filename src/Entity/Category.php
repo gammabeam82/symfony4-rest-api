@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use App\Request\Category\CreateCategoryRequest;
+use App\Request\Category\UpdateCategoryRequest;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -35,6 +37,27 @@ class Category
     public function __construct()
     {
         $this->posts = new ArrayCollection();
+    }
+
+    /**
+     * @param CreateCategoryRequest $dto
+     *
+     * @return Category
+     */
+    public static function createFromDTO(CreateCategoryRequest $dto): Category
+    {
+        $category = new Category();
+        $category->setName($dto->name);
+
+        return $category;
+    }
+
+    /**
+     * @param UpdateCategoryRequest $dto
+     */
+    public function updateFromDTO(UpdateCategoryRequest $dto): void
+    {
+        $this->setName($dto->name);
     }
 
     public function getId(): ?int
