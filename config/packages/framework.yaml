@@ -30,3 +30,7 @@ framework:
         #app: cache.adapter.apcu
     serializer:
         enable_annotations: true
+
+    templating:
+        engines:
+            twig
