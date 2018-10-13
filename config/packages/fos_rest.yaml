@@ -5,6 +5,7 @@ fos_rest:
     format_listener:
         rules:
             - { path: ^/api, prefer_extension: true, fallback_format: json, priorities: [ json ] }
+            - { path: '^/', stop: true }
     exception:
         exception_controller: 'fos_rest.exception.controller:showAction'
         codes:

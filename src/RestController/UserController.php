@@ -11,9 +11,11 @@ use App\Service\UserService;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\Controller\FOSRestController;
 use FOS\RestBundle\View\View;
+use Nelmio\ApiDocBundle\Annotation\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Swagger\Annotations as SWG;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
@@ -25,6 +27,52 @@ class UserController extends FOSRestController
      * @Rest\Post("/register", name="create_user")
      * @Rest\View(serializerGroups={"user_details"})
      *
+     * @SWG\Post(
+     *     summary="Create new user",
+     *     consumes={"application/json"},
+     *     produces={"application/json"},
+     *     parameters={
+     *          @SWG\Parameter(
+     *              in="body",
+     *              name="user",
+     *              description="",
+     *              required=true,
+     *              @SWG\Schema(
+     *                  type="object",
+     *                  required={"username", "email", "password"},
+     *                  properties={
+     *                      @SWG\Property(
+     *                          type="string",
+     *                          property="username",
+     *                          minimum=2,
+     *                          maximum=180
+     *                      ),
+     *                      @SWG\Property(
+     *                          type="string",
+     *                          property="email",
+     *                          maximum=180
+     *                      ),
+     *                      @SWG\Property(
+     *                          type="string",
+     *                          property="password"
+     *                      )
+     *                  }
+     *
+     *              )
+     *          )
+     *     },
+     *     responses={
+     *         @SWG\Response(
+     *             response=201,
+     *             description="Created",
+     *         ),
+     *         @SWG\Response(
+     *             response=400,
+     *             description="Bad request",
+     *         )
+     *     }
+     * )
+     * @SWG\Tag(name="users")
      * @param CreateUserRequest $userRequest
      * @param UserService $service
      *
@@ -42,6 +90,68 @@ class UserController extends FOSRestController
      * @Rest\Put("/{id}/change_password", name="change_password")
      * @Rest\View(serializerGroups={"user_details"})
      * @ParamConverter("user", class="App:User")
+     *
+     * @Security(name="Bearer")
+     * @SWG\Put(
+     *     summary="Change user's password",
+     *     consumes={"application/json"},
+     *     produces={"application/json"},
+     *     parameters={
+     *         @SWG\Parameter(
+     *             in="path",
+     *             name="id",
+     *             type="integer",
+     *             required=true
+     *         ),
+     *         @SWG\Parameter(
+     *             in="header",
+     *             name="Authorization",
+     *             type="string",
+     *             required=true,
+     *             default="Bearer token"
+     *         ),
+     *         @SWG\Parameter(
+     *              in="body",
+     *              name="user",
+     *              description="",
+     *              required=true,
+     *              @SWG\Schema(
+     *                  type="object",
+     *                  required={"password", "repeatedPassword"},
+     *                  properties={
+     *                      @SWG\Property(
+     *                          type="string",
+     *                          property="password"
+     *                      ),
+     *                      @SWG\Property(
+     *                          type="string",
+     *                          property="repeatedPassword"
+     *                      )
+     *                  }
+     *
+     *              )
+     *          )
+     *     },
+     *     responses={
+     *         @SWG\Response(
+     *             response=200,
+     *             description="Ok",
+     *         ),
+     *         @SWG\Response(
+     *             response=400,
+     *             description="Bad request",
+     *         ),
+     *         @SWG\Response(
+     *             response=401,
+     *             description="Expired JWT Token | JWT Token not found | Invalid JWT Token",
+     *         ),
+     *         @SWG\Response(
+     *             response=403,
+     *             description="Forbidden",
+     *         )
+     *     }
+     * )
+     * @SWG\Tag(name="users")
      *
      * @param ChangePasswordRequest $passwordRequest
      * @param User $user
@@ -62,6 +172,64 @@ class UserController extends FOSRestController
      * @Rest\View(serializerGroups={"user_details"})
      * @ParamConverter("user", class="App:User")
      *
+     * @Security(name="Bearer")
+     * @SWG\Put(
+     *     summary="Change user's email",
+     *     consumes={"application/json"},
+     *     produces={"application/json"},
+     *     parameters={
+     *         @SWG\Parameter(
+     *             in="path",
+     *             name="id",
+     *             type="integer",
+     *             required=true
+     *         ),
+     *         @SWG\Parameter(
+     *             in="header",
+     *             name="Authorization",
+     *             type="string",
+     *             required=true,
+     *             default="Bearer token"
+     *         ),
+     *         @SWG\Parameter(
+     *              in="body",
+     *              name="user",
+     *              description="",
+     *              required=true,
+     *              @SWG\Schema(
+     *                  type="object",
+     *                  required={"email"},
+     *                  properties={
+     *                      @SWG\Property(
+     *                          type="string",
+     *                          property="email"
+     *                      )
+     *                  }
+     *
+     *              )
+     *          )
+     *     },
+     *     responses={
+     *         @SWG\Response(
+     *             response=200,
+     *             description="Ok",
+     *         ),
+     *         @SWG\Response(
+     *             response=400,
+     *             description="Bad request",
+     *         ),
+     *         @SWG\Response(
+     *             response=401,
+     *             description="Expired JWT Token | JWT Token not found | Invalid JWT Token",
+     *         ),
+     *         @SWG\Response(
+     *             response=403,
+     *             description="Forbidden",
+     *         )
+     *     }
+     * )
+     * @SWG\Tag(name="users")
+     *
      * @param ChangeEmailRequest $emailRequest
      * @param User $user
      * @param UserService $service
@@ -81,6 +249,43 @@ class UserController extends FOSRestController
      * @Rest\View(serializerGroups={"user_list"})
      * @ParamConverter("user", class="App:User")
      *
+     * @Security(name="Bearer")
+     * @SWG\Delete(
+     *     summary="Delete user",
+     *     consumes={"application/json"},
+     *     produces={"application/json"},
+     *     parameters={
+     *         @SWG\Parameter(
+     *             in="path",
+     *             name="id",
+     *             type="integer",
+     *             required=true
+     *         ),
+     *         @SWG\Parameter(
+     *             in="header",
+     *             name="Authorization",
+     *             type="string",
+     *             required=true,
+     *             default="Bearer token"
+     *         )
+     *     },
+     *     responses={
+     *         @SWG\Response(
+     *             response=200,
+     *             description="Ok"
+     *          ),
+     *          @SWG\Response(
+     *              response=401,
+     *              description="Expired JWT Token | JWT Token not found | Invalid JWT Token",
+     *          ),
+     *          @SWG\Response(
+     *              response=403,
+     *              description="Forbidden",
+     *          )
+     *     }
+     * )
+     * @SWG\Tag(name="users")
+     *
      * @param User $user
      * @param UserService $service
      *
@@ -98,6 +303,60 @@ class UserController extends FOSRestController
      * @Rest\View(serializerGroups={"user_details"})
      * @ParamConverter("user", class="App:User")
      *
+     * @Security(name="Bearer")
+     * @SWG\Get(
+     *     summary="Return single user",
+     *     consumes={"application/json"},
+     *     produces={"application/json"},
+     *     parameters={
+     *         @SWG\Parameter(
+     *             in="path",
+     *             name="id",
+     *             type="integer",
+     *             required=true
+     *         ),
+     *         @SWG\Parameter(
+     *             in="header",
+     *             name="Authorization",
+     *             type="string",
+     *             required=true,
+     *             default="Bearer token"
+     *         )
+     *     },
+     *     responses={
+     *         @SWG\Response(
+     *             response=200,
+     *             description="Ok",
+     *             @SWG\Schema(
+     *                 @SWG\Property(
+     *                     type="integer",
+     *                     property="id"
+     *                 ),
+     *                 @SWG\Property(
+     *                     type="string",
+     *                     property="username"
+     *                 ),
+     *                 @SWG\Property(
+     *                     type="string",
+     *                     property="email"
+     *                 ),
+     *                 @SWG\Property(
+     *                     type="array",
+     *                     property="roles",
+     *                     @SWG\Items(
+     *                         type="string"
+     *                     )
+     *                 )
+     *             )
+     *         ),
+     *         @SWG\Response(
+     *             response=401,
+     *             description="Expired JWT Token | JWT Token not found | Invalid JWT Token",
+     *         )
+     *     }
+     * )
+     * @SWG\Tag(name="users")
+     *
      * @param User $user
      *
      * @return View
@@ -110,6 +369,43 @@ class UserController extends FOSRestController
     /**
      * @Rest\Get("/", name="get_all_users")
      * @Rest\View(serializerGroups={"user_list"})
+     *
+     * @Security(name="Bearer")
+     * @SWG\Get(
+     *     summary="Return list of users",
+     *     consumes={"application/json"},
+     *     produces={"application/json"},
+     *     parameters={
+     *         @SWG\Parameter(
+     *             in="header",
+     *             name="Authorization",
+     *             type="string",
+     *             required=true,
+     *             default="Bearer token"
+     *         )
+     *     },
+     *     responses={
+     *         @SWG\Response(
+     *             response=200,
+     *             description="Ok",
+     *             @SWG\Schema(
+     *                 @SWG\Property(
+     *                     type="integer",
+     *                     property="id"
+     *                 ),
+     *                 @SWG\Property(
+     *                     type="string",
+     *                     property="username"
+     *                 )
+     *             )
+     *         ),
+     *         @SWG\Response(
+     *             response=401,
+     *             description="Expired JWT Token | JWT Token not found | Invalid JWT Token",
+     *         )
+     *     }
+     * )
+     * @SWG\Tag(name="users")
      *
      * @param UserService $service
      *
