@@ -87,12 +87,12 @@ class UserController extends FOSRestController
 
     /**
      * @IsGranted(Actions::EDIT, subject="user")
-     * @Rest\Put("/{id}/change_password", name="change_password")
+     * @Rest\Patch("/{id}/change_password", name="change_password", requirements={"id"="\d+"})
      * @Rest\View(serializerGroups={"user_details"})
      * @ParamConverter("user", class="App:User")
      *
      * @Security(name="Bearer")
-     * @SWG\Put(
+     * @SWG\Patch(
      *     summary="Change user's password",
      *     consumes={"application/json"},
      *     produces={"application/json"},
@@ -168,12 +168,12 @@ class UserController extends FOSRestController
 
     /**
      * @IsGranted(Actions::EDIT, subject="user")
-     * @Rest\Put("/{id}/change_email", name="change_email")
+     * @Rest\Patch("/{id}/change_email", name="change_email", requirements={"id"="\d+"})
      * @Rest\View(serializerGroups={"user_details"})
      * @ParamConverter("user", class="App:User")
      *
      * @Security(name="Bearer")
-     * @SWG\Put(
+     * @SWG\Patch(
      *     summary="Change user's email",
      *     consumes={"application/json"},
      *     produces={"application/json"},
@@ -245,7 +245,7 @@ class UserController extends FOSRestController
 
     /**
      * @IsGranted(Actions::DELETE, subject="user")
-     * @Rest\Delete("/{id}", name="delete_user")
+     * @Rest\Delete("/{id}", name="delete_user", requirements={"id"="\d+"})
      * @Rest\View(serializerGroups={"user_list"})
      * @ParamConverter("user", class="App:User")
      *
@@ -299,7 +299,7 @@ class UserController extends FOSRestController
     }
 
     /**
-     * @Rest\Get("/{id}", name="get_single_user")
+     * @Rest\Get("/{id}", name="get_single_user", requirements={"id"="\d+"})
      * @Rest\View(serializerGroups={"user_details"})
      * @ParamConverter("user", class="App:User")
      *
