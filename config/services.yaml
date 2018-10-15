@@ -5,6 +5,7 @@
 # https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
 parameters:
     locale: 'en'
+    avatars_dir: '%kernel.project_dir%/public/uploads/avatars'
 
 services:
     # default configuration for services in *this* file
@@ -33,3 +34,13 @@ services:
     Symfony\Component\PropertyAccess\PropertyAccessor:
         class: Symfony\Component\PropertyAccess\PropertyAccessor
         factory: [Symfony\Component\PropertyAccess\PropertyAccess, createPropertyAccessor]
+
+    App\Service\Uploader:
+        arguments:
+            $directory: '%avatars_dir%'
+
+    App\EventListener\UserSubscriber:
+        arguments:
+            $directory: '%avatars_dir%'
+        tags:
+            - { name: doctrine.event_listener, event: preRemove }

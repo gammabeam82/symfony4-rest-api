@@ -8,6 +8,8 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 class CreateUserRequest extends RequestObject
 {
+    public const UPLOADS = ['imagefile'];
+
     /**
      * @var string
      * @Assert\NotBlank(message="fos_user.username.blank")
@@ -53,4 +55,17 @@ class CreateUserRequest extends RequestObject
      * )
      */
     public $password;
+
+    /**
+     * @Assert\File(
+     *     maxSize="1024k",
+     *     mimeTypes={"image/jpeg", "image/png"}
+     * )
+     */
+    public $imagefile;
+
+    /**
+     * @var string
+     */
+    public $avatar;
 }

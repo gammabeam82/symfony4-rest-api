@@ -39,9 +39,34 @@ class User extends BaseUser
      */
     protected $roles;
 
+    /**
+     * @Groups({"user_details"})
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    protected $avatar;
+
     public function __construct()
     {
         parent::__construct();
+    }
+
+    /**
+     * @param string|null $avatar
+     *
+     * @return User
+     */
+    public function setAvatar(string $avatar = null): User
+    {
+        $this->avatar = $avatar;
+        return $this;
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getAvatar(): ?string
+    {
+        return $this->avatar;
     }
 
     /**
@@ -58,6 +83,7 @@ class User extends BaseUser
             ->setEmail($dto->email)
             ->setPlainPassword($dto->password)
             ->addRole(UserInterface::ROLE_DEFAULT)
+            ->setAvatar($dto->avatar)
             ->setEnabled(true);
 
         return $user;

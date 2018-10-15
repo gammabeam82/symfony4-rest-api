@@ -29,7 +29,7 @@ class UserController extends FOSRestController
      *
      * @SWG\Post(
      *     summary="Create new user",
-     *     consumes={"application/json"},
+     *     consumes={"application/json", "multipart/form-data"},
      *     produces={"application/json"},
      *     parameters={
      *          @SWG\Parameter(
@@ -59,6 +59,13 @@ class UserController extends FOSRestController
      *                  }
      *
      *              )
+     *          ),
+     *          @SWG\Parameter(
+     *              in="formData",
+     *              name="imagefile",
+     *              type="file",
+     *              required=false,
+     *              description="Jpeg or png image"
      *          )
      *     },
      *     responses={
@@ -339,6 +346,10 @@ class UserController extends FOSRestController
      *                 @SWG\Property(
      *                     type="string",
      *                     property="email"
+     *                 ),
+     *                 @SWG\Property(
+     *                     type="string",
+     *                     property="avatar"
      *                 ),
      *                 @SWG\Property(
      *                     type="array",

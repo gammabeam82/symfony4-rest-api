@@ -12,25 +12,32 @@ use FOS\UserBundle\Model\UserManagerInterface;
 class UserService
 {
     /**
+     * @var UserManagerInterface
+     */
+    private $manager;
+
+    /**
      * @var UserRepository
      */
     private $repo;
 
     /**
-     * @var UserManagerInterface
+     * @var Uploader
      */
-    private $manager;
+    private $uploader;
 
     /**
      * UserService constructor.
      *
      * @param UserManagerInterface $manager
      * @param UserRepository $repo
+     * @param Uploader $uploader
      */
-    public function __construct(UserManagerInterface $manager, UserRepository $repo)
+    public function __construct(UserManagerInterface $manager, UserRepository $repo, Uploader $uploader)
     {
         $this->manager = $manager;
         $this->repo = $repo;
+        $this->uploader = $uploader;
     }
 
     /**
@@ -40,6 +47,10 @@ class UserService
      */
     public function createUser(CreateUserRequest $userRequest): User
     {
+        if (null !== $userRequest->imagefile) {
+            $this->uploader->upload($userRequest);
+        }
+
         $user = User::createFromDTO($userRequest);
 
         $this->manager->updateUser($user);

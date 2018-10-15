@@ -7,6 +7,7 @@ use App\Events;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityNotFoundException;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\HttpFoundation\FileBag;
 use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
 
 class RequestObjectSubscriber implements EventSubscriberInterface
@@ -52,19 +53,28 @@ class RequestObjectSubscriber implements EventSubscriberInterface
     {
         $dto = $event->getRequestObject();
 
-        if(0 === count($dto->getRelations())) {
+        if (0 === count($dto->getRelations()) && 0 === count($dto->getUploads())) {
             return;
         }
 
-        foreach($dto->getRelations() as $field => $class) {
+        foreach ($dto->getRelations() as $field => $class) {
             $repo = $this->em->getRepository($class);
             $entity = $repo->find($this->accessor->getValue($dto, $field));
 
-            if(null === $entity) {
+            if (null === $entity) {
                 throw new EntityNotFoundException();
             }
 
             $this->accessor->setValue($dto, $field, $entity);
+        }
+
+        /** @var FileBag $files */
+        $files = $event->getRequest()->files;
+
+        foreach ($dto->getUploads() as $field) {
+            if (null !== $files->get($field)) {
+                $this->accessor->setValue($dto, $field, $files->get($field));
+            }
         }
 
     }
