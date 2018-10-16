@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Request\User\ChangeAvatarRequest;
 use App\Request\User\ChangeEmailRequest;
 use App\Request\User\ChangePasswordRequest;
 use App\Request\User\CreateUserRequest;
@@ -103,5 +104,13 @@ class User extends BaseUser
     public function changeEmail(ChangeEmailRequest $dto): void
     {
         $this->setEmail($dto->email);
+    }
+
+    /**
+     * @param ChangeAvatarRequest $dto
+     */
+    public function changeAvatar(ChangeAvatarRequest $dto): void
+    {
+        $this->setAvatar($dto->avatar);
     }
 }

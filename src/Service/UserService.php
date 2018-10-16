@@ -4,6 +4,7 @@ namespace App\Service;
 
 use App\Entity\User;
 use App\Repository\UserRepository;
+use App\Request\User\ChangeAvatarRequest;
 use App\Request\User\ChangeEmailRequest;
 use App\Request\User\ChangePasswordRequest;
 use App\Request\User\CreateUserRequest;
@@ -76,6 +77,19 @@ class UserService
     public function changeUserEmail(User $user, ChangeEmailRequest $dto): void
     {
         $user->changeEmail($dto);
+
+        $this->manager->updateUser($user);
+    }
+
+    /**
+     * @param User $user
+     * @param ChangeAvatarRequest $dto
+     */
+    public function changeUserAvatar(User $user, ChangeAvatarRequest $dto): void
+    {
+        $this->uploader->upload($dto, $user);
+
+        $user->changeAvatar($dto);
 
         $this->manager->updateUser($user);
     }

@@ -12,6 +12,37 @@ nelmio_api_doc:
                 name: Authorization
                 in: header
 
+        paths:
+            /api/v1/login:
+                post:
+                    tags:
+                    - login
+                    description: Get JWT token.
+                    produces:
+                        - application/json
+                    parameters:
+                        - name: user
+                          description:
+                          in: body
+                          required: true
+                          schema:
+                              type: object
+                              properties:
+                                  username:
+                                      type: string
+                                  password:
+                                      type: string
+                    responses:
+                        '200':
+                            description: Ok
+                            schema:
+                                type: object
+                                properties:
+                                    token:
+                                        type: string
+                        '400':
+                            description: Bad request
+
     areas: # to filter documented areas
         path_patterns:
             - ^/api/v1/users(?!/doc$)

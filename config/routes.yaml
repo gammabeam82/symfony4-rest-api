@@ -3,7 +3,7 @@
 #    controller: App\Controller\DefaultController::index
 
 api_login_check:
-  path: /api/login_check
+  path: /api/v1/login
 
 fos_user:
   resource: "@FOSUserBundle/Resources/config/routing/all.xml"

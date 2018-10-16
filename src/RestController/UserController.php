@@ -3,10 +3,12 @@
 namespace App\RestController;
 
 use App\Entity\User;
+use App\Request\User\ChangeAvatarRequest;
 use App\Request\User\ChangeEmailRequest;
 use App\Request\User\ChangePasswordRequest;
 use App\Request\User\CreateUserRequest;
 use App\Security\Actions;
+use App\Service\Uploader;
 use App\Service\UserService;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\Controller\FOSRestController;
@@ -246,6 +248,119 @@ class UserController extends FOSRestController
     public function changeEmailAction(ChangeEmailRequest $emailRequest, User $user, UserService $service): View
     {
         $service->changeUserEmail($user, $emailRequest);
+
+        return View::create($user, Response::HTTP_OK);
+    }
+
+    /**
+     * @IsGranted(Actions::EDIT, subject="user")
+     * @Rest\Patch("/{id}/change_avatar", name="change_avatar", requirements={"id"="\d+"})
+     * @Rest\View(serializerGroups={"user_details"})
+     * @ParamConverter("user", class="App:User")
+     *
+     * @Security(name="Bearer")
+     * @SWG\Patch(
+     *     summary="Change profile picture",
+     *     consumes={"multipart/form-data"},
+     *     produces={"application/json"},
+     *     parameters={
+     *         @SWG\Parameter(
+     *             in="path",
+     *             name="id",
+     *             type="integer",
+     *             required=true
+     *         ),
+     *         @SWG\Parameter(
+     *             in="header",
+     *             name="Authorization",
+     *             type="string",
+     *             required=true,
+     *             default="Bearer token"
+     *         ),
+     *         @SWG\Parameter(
+     *              in="formData",
+     *              name="imagefile",
+     *              type="file",
+     *              required=true,
+     *              description="Jpeg or png image"
+     *         )
+     *     },
+     *     responses={
+     *         @SWG\Response(
+     *             response=200,
+     *             description="Ok",
+     *         ),
+     *         @SWG\Response(
+     *             response=400,
+     *             description="Bad request",
+     *         ),
+     *         @SWG\Response(
+     *             response=401,
+     *             description="Expired JWT Token | JWT Token not found | Invalid JWT Token",
+     *         ),
+     *         @SWG\Response(
+     *             response=403,
+     *             description="Forbidden",
+     *         )
+     *     }
+     * )
+     * @SWG\Tag(name="users")
+     *
+     * @param ChangeAvatarRequest $avatarRequest
+     * @param User $user
+     * @param UserService $service
+     *
+     * @return View
+     */
+    public function changeAvatarAction(ChangeAvatarRequest $avatarRequest, User $user, UserService $service): View
+    {
+        $service->changeUserAvatar($user, $avatarRequest);
+
+        return View::create($user, Response::HTTP_OK);
+    }
+
+    /**
+     * @IsGranted(Actions::EDIT, subject="user")
+     * @Rest\Delete("/{id}/delete_avatar", name="delete_avatar", requirements={"id"="\d+"})
+     * @Rest\View(serializerGroups={"user_details"})
+     * @ParamConverter("user", class="App:User")
+     *
+     * @Security(name="Bearer")
+     * @SWG\Delete(
+     *     summary="Delete profile picture",
+     *     produces={"application/json"},
+     *     parameters={
+     *
+     *     },
+     *     responses={
+     *         @SWG\Response(
+     *             response=200,
+     *             description="Ok",
+     *         ),
+     *         @SWG\Response(
+     *             response=400,
+     *             description="Bad request",
+     *         ),
+     *         @SWG\Response(
+     *             response=401,
+     *             description="Expired JWT Token | JWT Token not found | Invalid JWT Token",
+     *         ),
+     *         @SWG\Response(
+     *             response=403,
+     *             description="Forbidden",
+     *         )
+     *     }
+     * )
+     * @SWG\Tag(name="users")
+     *
+     * @param User $user
+     * @param Uploader $service
+     *
+     * @return View
+     */
+    public function deleteAvatarAction(User $user, Uploader $service): View
+    {
+        $service->removeAvatar($user);
 
         return View::create($user, Response::HTTP_OK);
     }
