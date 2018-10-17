@@ -34,7 +34,7 @@ class CategoryFixtures extends Fixture
     {
         for ($i = 1; $i < 5; $i++) {
             $category = new Category();
-            $category->setName($this->faker->words(1, true));
+            $category->setName($this->faker->unique()->words(1, true));
 
             $manager->persist($category);
 
