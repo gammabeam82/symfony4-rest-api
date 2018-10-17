@@ -1,0 +1,323 @@
+nelmio_api_doc:
+    documentation:
+        paths:
+            /api/v1/login:
+                post:
+                    summary: Get JWT token.
+                    produces:
+                        - application/json
+                    tags:
+                        - login
+                    parameters:
+                        - name: user
+                          description:
+                          in: body
+                          required: true
+                          schema:
+                              type: object
+                              properties:
+                                  username:
+                                      type: string
+                                  password:
+                                      type: string
+                    responses:
+                        '200':
+                            description: Ok
+                            schema:
+                                type: object
+                                properties:
+                                    token:
+                                        type: string
+                        '400':
+                            description: Bad request
+
+            /api/v1/users/:
+                get:
+                    security:
+                        name: Bearer
+                    summary: Return list of users
+                    produces:
+                        - application/json
+                    tags:
+                        - users
+                    parameters:
+                        - name: Authorization
+                          description: JWT token
+                          in: header
+                          required: true
+                          type: string
+                          default: Bearer token
+                    responses:
+                        '200':
+                            description: Ok
+                            schema:
+                                type: object
+                                properties:
+                                    id:
+                                        type: integer
+                                    username:
+                                        type: string
+                        '401':
+                            description: Expired JWT Token | JWT Token not found | Invalid JWT Token
+                post:
+                    summary: Create user
+                    produces:
+                        - application/json
+                    consumes:
+                        - application/json
+                        - multipart/form-data
+                    tags:
+                        - users
+                    parameters:
+                        - name: user
+                          description:
+                          in: body
+                          required: true
+                          schema:
+                              type: object
+                              required:
+                                  - username
+                                  - email
+                                  - password
+                              properties:
+                                  username:
+                                      type: string
+                                  password:
+                                      type: string
+                                  email:
+                                      type: string
+                        - name: imagefile
+                          description: Jpeg or png image
+                          in: formData
+                          required: false
+                    responses:
+                        '201':
+                            description: Created
+                        '400':
+                            description: Bad request
+
+                
+
+            /api/v1/users/{id}:
+                get:
+                    security:
+                        name: Bearer
+                    summary: Return single user
+                    produces:
+                        - application/json
+                    tags:
+                        - users
+                    parameters:
+                        - name: id
+                          description: User ID
+                          in: path
+                          required: true
+                          type: integer
+                        - name: Authorization
+                          description: JWT token
+                          in: header
+                          required: true
+                          type: string
+                          default: Bearer token
+                    responses:
+                        '200':
+                            description: Ok
+                            schema:
+                                type: object
+                                properties:
+                                    id:
+                                        type: integer
+                                    username:
+                                        type: string
+                                    email:
+                                        type: string
+                                    avatar:
+                                        type: string
+                                    roles:
+                                        type: array
+                                        items:
+                                            type: string
+                        '401':
+                            description: Expired JWT Token | JWT Token not found | Invalid JWT Token
+                delete:
+                    security:
+                        name: Bearer
+                    summary: Delete user
+                    produces:
+                        - application/json
+                    tags:
+                        - users
+                    parameters:
+                        - name: id
+                          description: User ID
+                          in: path
+                          required: true
+                          type: integer
+                        - name: Authorization
+                          description: JWT token
+                          in: header
+                          required: true
+                          type: string
+                          default: Bearer token
+                    responses:
+                        '200':
+                            description: Ok
+                        '401':
+                            description: Expired JWT Token | JWT Token not found | Invalid JWT Token
+                        '403':
+                            description: Forbidden
+
+            /api/v1/users/{id}/change_password:
+                patch:
+                    security:
+                        name: Bearer
+                    summary: Change password
+                    produces:
+                        - application/json
+                    consumes:
+                        - application/json
+                    tags:
+                        - users
+                    parameters:
+                        - name: id
+                          description: User ID
+                          in: path
+                          required: true
+                          type: integer
+                        - name: Authorization
+                          description: JWT token
+                          in: header
+                          required: true
+                          type: string
+                          default: Bearer token
+                        - name: user
+                          description:
+                          in: body
+                          required: true
+                          schema:
+                              type: object
+                              required:
+                                  - password
+                                  - repeatedPassword
+                              properties:
+                                  password:
+                                      type: string
+                                  repeatedPassword:
+                                      type: string
+                    responses:
+                        '200':
+                            description: Ok
+                        '400':
+                            description: Bad request
+                        '401':
+                            description: Expired JWT Token | JWT Token not found | Invalid JWT Token
+                        '403':
+                            description: Forbidden
+
+            /api/v1/users/{id}/change_email:
+                patch:
+                    security:
+                        name: Bearer
+                    summary: Change email
+                    produces:
+                        - application/json
+                    consumes:
+                        - application/json
+                    tags:
+                        - users
+                    parameters:
+                        - name: id
+                          description: User ID
+                          in: path
+                          required: true
+                          type: integer
+                        - name: Authorization
+                          description: JWT token
+                          in: header
+                          required: true
+                          type: string
+                          default: Bearer token
+                        - name: user
+                          description:
+                          in: body
+                          required: true
+                          schema:
+                                type: object
+                                required:
+                                    - email
+                                properties:
+                                    email:
+                                        type: string
+                    responses:
+                        '200':
+                            description: Ok
+                        '400':
+                            description: Bad request
+                        '401':
+                            description: Expired JWT Token | JWT Token not found | Invalid JWT Token
+                        '403':
+                            description: Forbidden
+
+            /api/v1/users/{id}/delete_avatar:
+                delete:
+                    security:
+                        name: Bearer
+                    summary: Delete profile picture
+                    produces:
+                        - application/json
+                    tags:
+                        - users
+                    parameters:
+                        - name: id
+                          description: User ID
+                          in: path
+                          required: true
+                          type: integer
+                        - name: Authorization
+                          description: JWT token
+                          in: header
+                          required: true
+                          type: string
+                          default: Bearer token
+                    responses:
+                        '200':
+                            description: Ok
+                        '401':
+                            description: Expired JWT Token | JWT Token not found | Invalid JWT Token
+                        '403':
+                            description: Forbidden
+
+            /api/v1/users/{id}/change_avatar:
+                patch:
+                    security:
+                        name: Bearer
+                    summary: Change profile picture
+                    consumes:
+                        - multipart/form-data
+                    produces:
+                        - application/json
+                    tags:
+                        - users
+                    parameters:
+                        - name: id
+                          description: User ID
+                          in: path
+                          required: true
+                          type: integer
+                        - name: Authorization
+                          description: JWT token
+                          in: header
+                          required: true
+                          type: string
+                          default: Bearer token
+                        - name: imagefile
+                          description: Jpeg or png image
+                          in: formData
+                          required: true
+                    responses:
+                        '200':
+                            description: Ok
+                        '401':
+                            description: Expired JWT Token | JWT Token not found | Invalid JWT Token
+                        '403':
+                            description: Forbidden
