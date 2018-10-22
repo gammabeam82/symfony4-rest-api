@@ -44,3 +44,7 @@ services:
             $directory: '%avatars_dir%'
         tags:
             - { name: doctrine.event_listener, event: preRemove }
+
+    Faker\Generator:
+        class: Faker\Generator
+        factory: [Faker\Factory, create]
