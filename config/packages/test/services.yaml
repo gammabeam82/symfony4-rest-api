@@ -1,0 +1,2 @@
+parameters:
+    upl_file: '%kernel.project_dir%/tests/files/1.jpg'

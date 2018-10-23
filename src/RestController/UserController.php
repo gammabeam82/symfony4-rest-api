@@ -15,8 +15,8 @@ use FOS\RestBundle\Controller\FOSRestController;
 use FOS\RestBundle\View\View;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
 
 /**
  * @Route("/api/v1/users")
@@ -24,7 +24,7 @@ use Symfony\Component\HttpFoundation\Response;
 class UserController extends FOSRestController
 {
     /**
-     * @Rest\Post("/", name="create_user")
+     * @Rest\Post("/register", name="create_user")
      * @Rest\View(serializerGroups={"user_details"})
      *
      * @param CreateUserRequest $userRequest

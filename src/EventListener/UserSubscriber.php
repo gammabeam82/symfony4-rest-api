@@ -40,7 +40,7 @@ class UserSubscriber implements EventSubscriber
     {
         $entity = $args->getObject();
 
-        if (false === $entity instanceof User) {
+        if (false === $entity instanceof User || null === $entity->getAvatar()) {
             return;
         }
 
