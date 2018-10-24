@@ -3,6 +3,7 @@
 namespace App\Service;
 
 use App\Entity\Post;
+use App\Entity\User;
 use App\Repository\PostRepository;
 use App\Request\Post\CreatePostRequest;
 use App\Request\Post\UpdatePostRequest;
@@ -34,12 +35,15 @@ class PostService
 
     /**
      * @param CreatePostRequest $dto
+     * @param User $user
      *
      * @return Post
      */
-    public function create(CreatePostRequest $dto): Post
+    public function create(CreatePostRequest $dto, User $user): Post
     {
         $post = Post::createFromDTO($dto);
+
+        $post->setUser($user);
 
         $this->em->persist($post);
         $this->em->flush();

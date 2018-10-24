@@ -9,6 +9,8 @@ use FOS\UserBundle\Model\UserManagerInterface;
 
 class UserFixtures extends Fixture
 {
+    public const USER_REFERENCE = 'user';
+
     /**
      * @var UserManagerInterface
      */
@@ -39,5 +41,7 @@ class UserFixtures extends Fixture
             ->addRole('ROLE_ADMIN');
 
         $this->userManager->updateUser($user);
+
+        $this->addReference(self::USER_REFERENCE, $user);
     }
 }

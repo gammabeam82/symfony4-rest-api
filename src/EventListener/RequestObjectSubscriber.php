@@ -59,7 +59,13 @@ class RequestObjectSubscriber implements EventSubscriberInterface
 
         foreach ($dto->getRelations() as $field => $class) {
             $repo = $this->em->getRepository($class);
-            $entity = $repo->find($this->accessor->getValue($dto, $field));
+            $id = $this->accessor->getValue($dto, $field);
+
+            if (null === $id) {
+                continue;
+            }
+
+            $entity = $repo->find($id);
 
             if (null === $entity) {
                 throw new EntityNotFoundException();

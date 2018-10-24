@@ -38,11 +38,16 @@ class PostFixtures extends Fixture implements DependentFixtureInterface
                 ->setTitle($this->faker->words(3, true))
                 ->setArticle($this->faker->paragraphs(5, true))
                 ->setCreatedAt(new \DateTime(sprintf("-%d days", $i + 2)));
+
             /** @var \App\Entity\Category $category */
             $category = $this->getReference(
                 sprintf("%s%d", CategoryFixtures::CATEGORY_REFERENCE, random_int(1, 4))
             );
             $post->setCategory($category);
+
+            /** @var \App\Entity\User $user */
+            $user = $this->getReference(UserFixtures::USER_REFERENCE);
+            $post->setUser($user);
 
             $manager->persist($post);
         }
