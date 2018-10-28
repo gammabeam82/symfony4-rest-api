@@ -71,7 +71,7 @@ class CategoryService
     /**
      * @return Category[]
      */
-    public function getAllCategories(): Array
+    public function getAllCategories(): array
     {
         return $this->repo->findAll();
     }

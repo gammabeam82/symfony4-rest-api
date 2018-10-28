@@ -3,16 +3,19 @@
 namespace App\RestController;
 
 use App\Entity\Post;
+use App\Entity\User;
 use App\Request\Post\CreatePostRequest;
 use App\Request\Post\UpdatePostRequest;
 use App\Security\Actions;
 use App\Service\PostService;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\Controller\FOSRestController;
+use FOS\RestBundle\Request\ParamFetcher;
 use FOS\RestBundle\View\View;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 
 /**
  * @Route("/api/v1/posts")
@@ -25,14 +28,18 @@ class PostController extends FOSRestController
      *
      * @param CreatePostRequest $postRequest
      * @param PostService $service
+     * @param TokenInterface $token
      *
      * @return View
      */
-    public function createPostAction(CreatePostRequest $postRequest, PostService $service): View
+    public function createPostAction(CreatePostRequest $postRequest, PostService $service, TokenInterface $token): View
     {
         $this->denyAccessUnlessGranted(Actions::CREATE, new Post());
 
-        $post = $service->create($postRequest, $this->getUser());
+        /** @var User $user */
+        $user = $token->getUser();
+
+        $post = $service->create($postRequest, $user);
 
         return View::create($post, Response::HTTP_CREATED);
     }
@@ -91,15 +98,21 @@ class PostController extends FOSRestController
     }
 
     /**
-     * @Rest\Get("/", name="get_all_posts")
+     * @Rest\Get("/", name="get_posts")
      * @Rest\View(serializerGroups={"post_list", "category_list", "user_list"})
+     * @Rest\QueryParam(name="query", nullable=true, requirements="[\w]{3,}")
+     * @Rest\QueryParam(name="page", requirements="\d+", default="1")
+     * @Rest\QueryParam(name="user", requirements="\d+", map=true)
+     * @Rest\QueryParam(name="category", requirements="\d+", map=true)
+     * @Rest\QueryParam(name="order", requirements="(asc|desc)", allowBlank=false, default="desc")
      *
+     * @param ParamFetcher $paramFetcher
      * @param PostService $service
      *
      * @return View
      */
-    public function getPostsAction(PostService $service): View
+    public function getPostsAction(ParamFetcher $paramFetcher, PostService $service): View
     {
-        return View::create($service->getAllPosts(), Response::HTTP_OK);
+        return View::create($service->getFilteredPosts($paramFetcher), Response::HTTP_OK);
     }
 }

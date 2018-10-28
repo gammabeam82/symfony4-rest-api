@@ -12,6 +12,6 @@ fos_rest:
             Symfony\Component\HttpKernel\Exception\NotFoundHttpException: 404
         messages:
             Symfony\Component\HttpKernel\Exception\NotFoundHttpException: true
-#    param_fetcher_listener:  true
+    param_fetcher_listener: true
 #    allowed_methods_listener:  true
 #    routing_loader: true

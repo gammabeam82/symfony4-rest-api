@@ -8,9 +8,12 @@ use App\Repository\PostRepository;
 use App\Request\Post\CreatePostRequest;
 use App\Request\Post\UpdatePostRequest;
 use Doctrine\ORM\EntityManagerInterface;
+use FOS\RestBundle\Request\ParamFetcher;
 
 class PostService
 {
+    public const LIMIT = 10;
+
     /**
      * @var EntityManagerInterface
      */
@@ -73,10 +76,30 @@ class PostService
     }
 
     /**
+     * @param ParamFetcher $paramFetcher
+     *
      * @return Post[]
      */
-    public function getAllPosts(): Array
+    public function getFilteredPosts(ParamFetcher $paramFetcher): array
     {
-        return $this->repo->findAll();
+        $params = [
+            'offset' => ($paramFetcher->get('page') - 1) * self::LIMIT,
+            'limit' => self::LIMIT,
+            'order' => $paramFetcher->get('order')
+        ];
+
+        if (false === empty($paramFetcher->get('query'))) {
+            $params['query'] = $paramFetcher->get('query');
+        }
+
+        if (null !== $paramFetcher->get('user')) {
+            $params['user'] = $paramFetcher->get('user');
+        }
+
+        if (null !== $paramFetcher->get('category')) {
+            $params['category'] = $paramFetcher->get('category');
+        }
+
+        return $this->repo->findByParams($params);
     }
 }

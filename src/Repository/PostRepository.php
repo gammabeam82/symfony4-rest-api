@@ -19,32 +19,43 @@ class PostRepository extends ServiceEntityRepository
         parent::__construct($registry, Post::class);
     }
 
-//    /**
-//     * @return Post[] Returns an array of Post objects
-//     */
-    /*
-    public function findByExampleField($value)
+    /**
+     * @param array $params
+     *
+     * @return array
+     */
+    public function findByParams(array $params): array
     {
-        return $this->createQueryBuilder('p')
-            ->andWhere('p.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('p.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
-    }
-    */
+        $qb = $this->createQueryBuilder('p')
+            ->orderBy('p.id', $params['order'])
+            ->setFirstResult($params['offset'])
+            ->setMaxResults($params['limit']);
 
-    /*
-    public function findOneBySomeField($value): ?Post
-    {
-        return $this->createQueryBuilder('p')
-            ->andWhere('p.exampleField = :val')
-            ->setParameter('val', $value)
+
+        if (false !== array_key_exists('query', $params)) {
+            $expr = $qb->expr()->orX(
+                'LOWER(p.title) LIKE :query',
+                'LOWER(p.article) LIKE :query'
+            );
+            $qb
+                ->andWhere($expr)
+                ->setParameter('query', sprintf("%%%s%%", mb_strtolower($params['query'])));
+        }
+
+        if (false !== array_key_exists('user', $params)) {
+            $qb
+                ->andWhere('p.user in (:user)')
+                ->setParameter('user', $params['user']);
+        }
+
+        if (false !== array_key_exists('category', $params)) {
+            $qb
+                ->andWhere('p.category in (:category)')
+                ->setParameter('category', $params['category']);
+        }
+
+        return $qb
             ->getQuery()
-            ->getOneOrNullResult()
-        ;
+            ->getResult();
     }
-    */
 }
