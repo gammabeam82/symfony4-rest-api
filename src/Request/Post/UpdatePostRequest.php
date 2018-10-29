@@ -35,4 +35,14 @@ class UpdatePostRequest extends RequestObject
      * @Assert\Valid()
      * */
     public $tags;
+
+    /**
+     * @Assert\DateTime()
+     */
+    public $updatedAt;
+
+    public function __construct()
+    {
+        $this->updatedAt = new \DateTime('now');
+    }
 }

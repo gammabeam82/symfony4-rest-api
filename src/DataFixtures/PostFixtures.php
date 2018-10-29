@@ -37,7 +37,8 @@ class PostFixtures extends Fixture implements DependentFixtureInterface
             $post
                 ->setTitle($this->faker->words(3, true))
                 ->setArticle($this->faker->paragraphs(5, true))
-                ->setCreatedAt(new \DateTime(sprintf("-%d days", $i + 2)));
+                ->setCreatedAt(new \DateTime(sprintf("-%d days", $i + 2)))
+                ->setUpdatedAt(new \DateTime('now'));
 
             /** @var \App\Entity\Category $category */
             $category = $this->getReference(

@@ -68,6 +68,12 @@ class Post
      */
     private $tags;
 
+    /**
+     * @Groups({"post_details"})
+     * @ORM\Column(type="datetime")
+     */
+    private $updatedAt;
+
     public function __construct()
     {
         $this->tags = new ArrayCollection();
@@ -85,6 +91,7 @@ class Post
         $post
             ->setTitle($dto->title)
             ->setCreatedAt($dto->createdAt)
+            ->setUpdatedAt($dto->updatedAt)
             ->setArticle($dto->article)
             ->setCategory($dto->category)
             ->setTags($dto->tags);
@@ -103,6 +110,7 @@ class Post
             ->setTitle($dto->title)
             ->setArticle($dto->article)
             ->setCategory($dto->category)
+            ->setUpdatedAt($dto->updatedAt)
             ->setTags($dto->tags);
 
         return $this;
@@ -240,6 +248,18 @@ class Post
             $this->tags->removeElement($tag);
             $tag->removePost($this);
         }
+
+        return $this;
+    }
+
+    public function getUpdatedAt(): ?\DateTimeInterface
+    {
+        return $this->updatedAt;
+    }
+
+    public function setUpdatedAt(\DateTimeInterface $updatedAt): self
+    {
+        $this->updatedAt = $updatedAt;
 
         return $this;
     }

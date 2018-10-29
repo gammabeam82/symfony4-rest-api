@@ -32,6 +32,11 @@ class CreatePostRequest extends RequestObject
     public $createdAt;
 
     /**
+     * @Assert\DateTime()
+     */
+    public $updatedAt;
+
+    /**
      * @Assert\Valid()
      */
     public $category;
@@ -44,5 +49,6 @@ class CreatePostRequest extends RequestObject
     public function __construct()
     {
         $this->createdAt = new \DateTime('now');
+        $this->updatedAt = new \DateTime('now');
     }
 }
