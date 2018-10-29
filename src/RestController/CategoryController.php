@@ -35,7 +35,7 @@ class CategoryController extends FOSRestController
     }
 
     /**
-     * @Rest\Put("/{id}", name="update_category")
+     * @Rest\Patch("/{id}", name="update_category")
      * @Rest\View(serializerGroups={"category_list"})
      * @ParamConverter("category", class="App:Category")
      *

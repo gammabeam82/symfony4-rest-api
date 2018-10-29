@@ -45,6 +45,14 @@ class PostFixtures extends Fixture implements DependentFixtureInterface
             );
             $post->setCategory($category);
 
+            for ($t = 1; $t < 3; $t++) {
+                /** @var \App\Entity\Tag $tag */
+                $tag = $this->getReference(
+                    sprintf("%s%d", TagFixtures::TAG_REFERENCE, $t + random_int(0, 2))
+                );
+                $post->addTag($tag);
+            }
+
             /** @var \App\Entity\User $user */
             $user = $this->getReference(UserFixtures::USER_REFERENCE);
             $post->setUser($user);
@@ -61,7 +69,8 @@ class PostFixtures extends Fixture implements DependentFixtureInterface
     public function getDependencies(): array
     {
         return [
-            CategoryFixtures::class
+            CategoryFixtures::class,
+            TagFixtures::class
         ];
     }
 }

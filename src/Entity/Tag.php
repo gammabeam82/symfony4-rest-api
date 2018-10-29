@@ -2,20 +2,20 @@
 
 namespace App\Entity;
 
-use App\Request\Category\CreateCategoryRequest;
-use App\Request\Category\UpdateCategoryRequest;
+use App\Request\Tag\CreateTagRequest;
+use App\Request\Tag\UpdateTagRequest;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
- * @ORM\Entity(repositoryClass="App\Repository\CategoryRepository")
+ * @ORM\Entity(repositoryClass="App\Repository\TagRepository")
  */
-class Category
+class Tag
 {
     /**
-     * @Groups({"category_list", "category_details"})
+     * @Groups({"tag_list", "tag_details", "post_details"})
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
@@ -23,14 +23,14 @@ class Category
     private $id;
 
     /**
-     * @Groups({"category_list", "category_details"})
-     * @ORM\Column(type="string", length=255, unique=true)
+     * @Groups({"tag_list", "tag_details", "post_details"})
+     * @ORM\Column(type="string", length=255)
      */
     private $name;
 
     /**
-     * @Groups({"category_list", "category_details"})
-     * @ORM\OneToMany(targetEntity="App\Entity\Post", mappedBy="category", cascade={"persist"})
+     * @Groups({"tag_list", "tag_details"})
+     * @ORM\ManyToMany(targetEntity="App\Entity\Post", mappedBy="tags")
      */
     private $posts;
 
@@ -40,22 +40,22 @@ class Category
     }
 
     /**
-     * @param CreateCategoryRequest $dto
+     * @param CreateTagRequest $dto
      *
-     * @return Category
+     * @return Tag
      */
-    public static function createFromDTO(CreateCategoryRequest $dto): Category
+    public static function createFromDTO(CreateTagRequest $dto): Tag
     {
-        $category = new Category();
-        $category->setName($dto->name);
+        $tag = new Tag();
+        $tag->setName($dto->name);
 
-        return $category;
+        return $tag;
     }
 
     /**
-     * @param UpdateCategoryRequest $dto
+     * @param UpdateTagRequest $dto
      */
-    public function updateFromDTO(UpdateCategoryRequest $dto): void
+    public function updateFromDTO(UpdateTagRequest $dto): void
     {
         $this->setName($dto->name);
     }
@@ -89,7 +89,6 @@ class Category
     {
         if (!$this->posts->contains($post)) {
             $this->posts[] = $post;
-            $post->setCategory($this);
         }
 
         return $this;
@@ -99,10 +98,6 @@ class Category
     {
         if ($this->posts->contains($post)) {
             $this->posts->removeElement($post);
-            // set the owning side to null (unless already changed)
-            if ($post->getCategory() === $this) {
-                $post->setCategory(null);
-            }
         }
 
         return $this;

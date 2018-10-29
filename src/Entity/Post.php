@@ -4,6 +4,8 @@ namespace App\Entity;
 
 use App\Request\Post\CreatePostRequest;
 use App\Request\Post\UpdatePostRequest;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
@@ -13,7 +15,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 class Post
 {
     /**
-     * @Groups({"post_list", "post_details", "category_details"})
+     * @Groups({"post_list", "post_details", "category_list", "category_details", "tag_list", "tag_details"})
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
@@ -21,7 +23,7 @@ class Post
     private $id;
 
     /**
-     * @Groups({"post_list", "post_details", "category_details"})
+     * @Groups({"post_list", "post_details", "category_details", "tag_details"})
      * @ORM\Column(type="string", length=255)
      */
     private $title;
@@ -52,6 +54,26 @@ class Post
     private $user;
 
     /**
+     * @Groups({"post_list", "post_details"})
+     * @ORM\ManyToMany(targetEntity="App\Entity\Tag", inversedBy="posts", cascade={"persist"})
+     * @ORM\JoinTable(
+     *     name="posts_tags",
+     *     joinColumns={
+     *      @ORM\JoinColumn(name="post_id", referencedColumnName="id")
+     *  },
+     *  inverseJoinColumns={
+     *      @ORM\JoinColumn(name="tag_id", referencedColumnName="id")
+     *  }
+     * )
+     */
+    private $tags;
+
+    public function __construct()
+    {
+        $this->tags = new ArrayCollection();
+    }
+
+    /**
      * @param CreatePostRequest $dto
      *
      * @return Post
@@ -64,7 +86,8 @@ class Post
             ->setTitle($dto->title)
             ->setCreatedAt($dto->createdAt)
             ->setArticle($dto->article)
-            ->setCategory($dto->category);
+            ->setCategory($dto->category)
+            ->setTags($dto->tags);
 
         return $post;
     }
@@ -79,7 +102,8 @@ class Post
         $this
             ->setTitle($dto->title)
             ->setArticle($dto->article)
-            ->setCategory($dto->category);
+            ->setCategory($dto->category)
+            ->setTags($dto->tags);
 
         return $this;
     }
@@ -172,6 +196,50 @@ class Post
     public function setUser(?User $user): self
     {
         $this->user = $user;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Tag[]
+     */
+    public function getTags(): Collection
+    {
+        return $this->tags;
+    }
+
+    /**
+     * @param Collection|null $tags
+     *
+     * @return Post
+     */
+    public function setTags(?Collection $tags): self
+    {
+        $this->tags = $tags;
+
+        foreach($this->tags as $tag) {
+            $tag->addPost($this);
+        }
+
+        return $this;
+    }
+
+    public function addTag(Tag $tag): self
+    {
+        if (!$this->tags->contains($tag)) {
+            $this->tags[] = $tag;
+            $tag->addPost($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTag(Tag $tag): self
+    {
+        if ($this->tags->contains($tag)) {
+            $this->tags->removeElement($tag);
+            $tag->removePost($this);
+        }
 
         return $this;
     }

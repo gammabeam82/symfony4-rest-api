@@ -3,13 +3,15 @@
 namespace App\Request\Post;
 
 use App\Entity\Category;
+use App\Entity\Tag;
 use App\Request\RequestObject;
 use Symfony\Component\Validator\Constraints as Assert;
 
 class CreatePostRequest extends RequestObject
 {
     public const RELATIONS = [
-        'category' => Category::class
+        'category' => Category::class,
+        'tags' => Tag::class
     ];
 
     /**
@@ -33,6 +35,11 @@ class CreatePostRequest extends RequestObject
      * @Assert\Valid()
      */
     public $category;
+
+    /**
+     * @Assert\Valid()
+     * */
+    public $tags;
 
     public function __construct()
     {

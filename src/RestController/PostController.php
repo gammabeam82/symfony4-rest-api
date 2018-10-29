@@ -3,7 +3,6 @@
 namespace App\RestController;
 
 use App\Entity\Post;
-use App\Entity\User;
 use App\Request\Post\CreatePostRequest;
 use App\Request\Post\UpdatePostRequest;
 use App\Security\Actions;
@@ -15,7 +14,6 @@ use FOS\RestBundle\View\View;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 
 /**
  * @Route("/api/v1/posts")
@@ -24,28 +22,24 @@ class PostController extends FOSRestController
 {
     /**
      * @Rest\Post("/", name="create_post")
-     * @Rest\View(serializerGroups={"post_details", "category_list", "user_list"})
+     * @Rest\View(serializerGroups={"post_details", "category_list", "user_list", "tag_list"})
      *
      * @param CreatePostRequest $postRequest
      * @param PostService $service
-     * @param TokenInterface $token
      *
      * @return View
      */
-    public function createPostAction(CreatePostRequest $postRequest, PostService $service, TokenInterface $token): View
+    public function createPostAction(CreatePostRequest $postRequest, PostService $service): View
     {
         $this->denyAccessUnlessGranted(Actions::CREATE, new Post());
 
-        /** @var User $user */
-        $user = $token->getUser();
-
-        $post = $service->create($postRequest, $user);
+        $post = $service->create($postRequest, $this->getUser());
 
         return View::create($post, Response::HTTP_CREATED);
     }
 
     /**
-     * @Rest\Put("/{id}", name="update_post")
+     * @Rest\Patch("/{id}", name="update_post")
      * @Rest\View(serializerGroups={"post_details", "category_list", "user_list"})
      * @ParamConverter("post", class="App:Post")
      *
@@ -99,7 +93,7 @@ class PostController extends FOSRestController
 
     /**
      * @Rest\Get("/", name="get_posts")
-     * @Rest\View(serializerGroups={"post_list", "category_list", "user_list"})
+     * @Rest\View(serializerGroups={"post_list", "category_list", "user_list", "tag_list"})
      * @Rest\QueryParam(name="query", nullable=true, requirements="[\w]{3,}")
      * @Rest\QueryParam(name="page", requirements="\d+", default="1")
      * @Rest\QueryParam(name="user", requirements="\d+", map=true)

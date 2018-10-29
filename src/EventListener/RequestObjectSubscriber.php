@@ -4,6 +4,8 @@ namespace App\EventListener;
 
 use App\Event\RequestObjectEvent;
 use App\Events;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Persistence\ObjectRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityNotFoundException;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -59,16 +61,21 @@ class RequestObjectSubscriber implements EventSubscriberInterface
 
         foreach ($dto->getRelations() as $field => $class) {
             $repo = $this->em->getRepository($class);
-            $id = $this->accessor->getValue($dto, $field);
+            $value = $this->accessor->getValue($dto, $field);
 
-            if (null === $id) {
+            if (null === $value) {
                 continue;
             }
 
-            $entity = $repo->find($id);
-
-            if (null === $entity) {
-                throw new EntityNotFoundException();
+            if (false !== is_array($value)) {
+                $collection = new ArrayCollection();
+                foreach ($value as $id) {
+                    $entity = $this->findEntity($repo, $id);
+                    $collection->add($entity);
+                }
+                $entity = $collection;
+            } else {
+                $entity = $this->findEntity($repo, $value);
             }
 
             $this->accessor->setValue($dto, $field, $entity);
@@ -83,5 +90,23 @@ class RequestObjectSubscriber implements EventSubscriberInterface
             }
         }
 
+    }
+
+    /**
+     * @param ObjectRepository $repo
+     * @param int $id
+     *
+     * @return object
+     * @throws EntityNotFoundException
+     */
+    private function findEntity(ObjectRepository $repo, int $id): object
+    {
+        $entity = $repo->find($id);
+
+        if (null === $entity) {
+            throw new EntityNotFoundException();
+        }
+
+        return $entity;
     }
 }
