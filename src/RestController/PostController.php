@@ -105,6 +105,7 @@ class PostController extends FOSRestController
      * @Rest\QueryParam(name="page", requirements="\d+", default="1")
      * @Rest\QueryParam(name="user", requirements="\d+", map=true)
      * @Rest\QueryParam(name="category", requirements="\d+", map=true)
+     * @Rest\QueryParam(name="tags", requirements="\d+", map=true)
      * @Rest\QueryParam(name="order", requirements="(asc|desc)", allowBlank=false, default="desc")
      *
      * @param ParamFetcher $paramFetcher

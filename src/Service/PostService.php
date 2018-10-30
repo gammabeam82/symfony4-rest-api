@@ -100,6 +100,10 @@ class PostService
             $params['category'] = $paramFetcher->get('category');
         }
 
+        if (null !== $paramFetcher->get('tags')) {
+            $params['tags'] = $paramFetcher->get('tags');
+        }
+
         return $this->repo->findByParams($params);
     }
 }

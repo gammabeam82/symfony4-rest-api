@@ -54,6 +54,13 @@ class PostRepository extends ServiceEntityRepository
                 ->setParameter('category', $params['category']);
         }
 
+        if (false !== array_key_exists('tags', $params)) {
+            $qb
+                ->join('p.tags', 't')
+                ->andWhere('t.id in (:tags)')
+                ->setParameter('tags', $params['tags']);
+        }
+
         return $qb
             ->getQuery()
             ->getResult();
