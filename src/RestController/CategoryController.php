@@ -9,6 +9,7 @@ use App\Service\CategoryService;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\Controller\FOSRestController;
 use FOS\RestBundle\View\View;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -19,6 +20,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class CategoryController extends FOSRestController
 {
     /**
+     * @IsGranted("ROLE_ADMIN")
      * @Rest\Post("/", name="create_category")
      * @Rest\View(serializerGroups={"category_details"})
      *
@@ -35,6 +37,7 @@ class CategoryController extends FOSRestController
     }
 
     /**
+     * @IsGranted("ROLE_ADMIN")
      * @Rest\Patch("/{id}", name="update_category")
      * @Rest\View(serializerGroups={"category_list"})
      * @ParamConverter("category", class="App:Category")
@@ -67,6 +70,7 @@ class CategoryController extends FOSRestController
     }
 
     /**
+     * @IsGranted("ROLE_ADMIN")
      * @Rest\Delete("/{id}", name="delete_category")
      * @Rest\View(serializerGroups={"category_list"})
      * @ParamConverter("category", class="App:Category")

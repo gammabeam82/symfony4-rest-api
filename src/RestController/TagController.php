@@ -9,6 +9,7 @@ use App\Service\TagService;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\Controller\FOSRestController;
 use FOS\RestBundle\View\View;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -19,6 +20,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class TagController extends FOSRestController
 {
     /**
+     * @IsGranted("ROLE_ADMIN")
      * @Rest\Post("/", name="create_tag")
      * @Rest\View(serializerGroups={"tag_details"})
      *
@@ -35,6 +37,7 @@ class TagController extends FOSRestController
     }
 
     /**
+     * @IsGranted("ROLE_ADMIN")
      * @Rest\Patch("/{id}", name="update_tag")
      * @Rest\View(serializerGroups={"tag_list"})
      * @ParamConverter("tag", class="App:Tag")
@@ -67,6 +70,7 @@ class TagController extends FOSRestController
     }
 
     /**
+     * @IsGranted("ROLE_ADMIN")
      * @Rest\Delete("/{id}", name="delete_tag")
      * @Rest\View(serializerGroups={"tag_list"})
      * @ParamConverter("tag", class="App:Tag")
