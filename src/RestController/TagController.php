@@ -89,7 +89,7 @@ class TagController extends FOSRestController
 
     /**
      * @Rest\Get("/", name="get_all_tags")
-     * @Rest\View(serializerGroups={"tag_list"})
+     * @Rest\View(serializerGroups={"tag_list", "tag_posts"})
      *
      * @param TagService $service
      *

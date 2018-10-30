@@ -67,7 +67,7 @@ class PostVoter extends Voter
      */
     private function canEdit(Post $subject, User $user): bool
     {
-        return $user->getId() === $subject->getId() || false !== in_array('ROLE_SUPER_ADMIN', $user->getRoles());
+        return $user->getId() === $subject->getUser()->getId() || false !== in_array('ROLE_SUPER_ADMIN', $user->getRoles());
     }
 
     /**
@@ -78,6 +78,6 @@ class PostVoter extends Voter
      */
     private function canDelete(Post $subject, User $user): bool
     {
-        return $user->getId() === $subject->getId() || false !== in_array('ROLE_SUPER_ADMIN', $user->getRoles());
+        return $user->getId() === $subject->getUser()->getId() || false !== in_array('ROLE_SUPER_ADMIN', $user->getRoles());
     }
 }

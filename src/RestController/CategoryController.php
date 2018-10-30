@@ -89,7 +89,7 @@ class CategoryController extends FOSRestController
 
     /**
      * @Rest\Get("/", name="get_all_categories")
-     * @Rest\View(serializerGroups={"category_list"})
+     * @Rest\View(serializerGroups={"category_list", "category_posts"})
      *
      * @param CategoryService $service
      *

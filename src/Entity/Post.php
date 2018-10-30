@@ -15,7 +15,16 @@ use Symfony\Component\Serializer\Annotation\Groups;
 class Post
 {
     /**
-     * @Groups({"post_list", "post_details", "category_list", "category_details", "tag_list", "tag_details"})
+     * @Groups({
+     *     "post_list",
+     *     "post_details",
+     *     "category_list",
+     *     "category_details",
+     *     "tag_list",
+     *     "tag_details",
+     *     "category_posts",
+     *     "tag_posts"
+     * })
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
@@ -23,7 +32,14 @@ class Post
     private $id;
 
     /**
-     * @Groups({"post_list", "post_details", "category_details", "tag_details"})
+     * @Groups({
+     *     "post_list",
+     *     "post_details",
+     *     "category_details",
+     *     "tag_details",
+     *     "category_posts",
+     *     "tag_posts"
+     * })
      * @ORM\Column(type="string", length=255)
      */
     private $title;

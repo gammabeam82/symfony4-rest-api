@@ -29,7 +29,7 @@ class Category
     private $name;
 
     /**
-     * @Groups({"category_list", "category_details"})
+     * @Groups({"category_details", "category_posts"})
      * @ORM\OneToMany(targetEntity="App\Entity\Post", mappedBy="category", cascade={"persist"})
      */
     private $posts;

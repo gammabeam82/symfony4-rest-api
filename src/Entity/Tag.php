@@ -29,7 +29,7 @@ class Tag
     private $name;
 
     /**
-     * @Groups({"tag_list", "tag_details"})
+     * @Groups({"tag_details", "tag_posts"})
      * @ORM\ManyToMany(targetEntity="App\Entity\Post", mappedBy="tags")
      */
     private $posts;

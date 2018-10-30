@@ -3,6 +3,7 @@
 namespace App\RestController;
 
 use App\Entity\Post;
+use App\Entity\User;
 use App\Request\Post\CreatePostRequest;
 use App\Request\Post\UpdatePostRequest;
 use App\Security\Actions;
@@ -11,9 +12,11 @@ use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\Controller\FOSRestController;
 use FOS\RestBundle\Request\ParamFetcher;
 use FOS\RestBundle\View\View;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 /**
  * @Route("/api/v1/posts")
@@ -26,19 +29,26 @@ class PostController extends FOSRestController
      *
      * @param CreatePostRequest $postRequest
      * @param PostService $service
+     * @param TokenStorageInterface
      *
      * @return View
      */
-    public function createPostAction(CreatePostRequest $postRequest, PostService $service): View
+    public function createPostAction(CreatePostRequest $postRequest, PostService $service, TokenStorageInterface $tokenStorage): View
     {
         $this->denyAccessUnlessGranted(Actions::CREATE, new Post());
 
-        $post = $service->create($postRequest, $this->getUser());
+        /** @var User $user */
+        $user = $tokenStorage
+            ->getToken()
+            ->getUser();
+
+        $post = $service->create($postRequest, $user);
 
         return View::create($post, Response::HTTP_CREATED);
     }
 
     /**
+     * @IsGranted(Actions::EDIT, subject="post")
      * @Rest\Patch("/{id}", name="update_post")
      * @Rest\View(serializerGroups={"post_details", "category_list", "user_list"})
      * @ParamConverter("post", class="App:Post")
@@ -51,8 +61,6 @@ class PostController extends FOSRestController
      */
     public function updatePostAction(UpdatePostRequest $postRequest, Post $post, PostService $service): View
     {
-        $this->denyAccessUnlessGranted(Actions::EDIT, $post);
-
         $service->update($postRequest, $post);
 
         return View::create($post, Response::HTTP_OK);
@@ -73,6 +81,7 @@ class PostController extends FOSRestController
     }
 
     /**
+     * @IsGranted(Actions::DELETE, subject="post")
      * @Rest\Delete("/{id}", name="delete_post")
      * @Rest\View(serializerGroups={"post_list"})
      * @ParamConverter("post", class="App:Post")
@@ -84,8 +93,6 @@ class PostController extends FOSRestController
      */
     public function deletePostAction(Post $post, PostService $service): View
     {
-        $this->denyAccessUnlessGranted(Actions::DELETE, $post);
-
         $service->delete($post);
 
         return View::create($post, Response::HTTP_OK);
