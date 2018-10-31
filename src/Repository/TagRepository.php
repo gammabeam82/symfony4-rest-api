@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Tag;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use FOS\RestBundle\Request\ParamFetcherInterface;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 
 /**
@@ -19,32 +20,20 @@ class TagRepository extends ServiceEntityRepository
         parent::__construct($registry, Tag::class);
     }
 
-//    /**
-//     * @return Tag[] Returns an array of Tag objects
-//     */
-    /*
-    public function findByExampleField($value)
+    /**
+     * @param ParamFetcherInterface $paramFetcher
+     *
+     * @return Tag[]
+     */
+    public function findByParams(ParamFetcherInterface $paramFetcher): array
     {
-        return $this->createQueryBuilder('t')
-            ->andWhere('t.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('t.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
-    }
-    */
+        $qb = $this->createQueryBuilder('t')
+            ->orderBy('t.name', $paramFetcher->get('order'))
+            ->setFirstResult(($paramFetcher->get('page') - 1) * $paramFetcher->get('limit'))
+            ->setMaxResults($paramFetcher->get('limit'));
 
-    /*
-    public function findOneBySomeField($value): ?Tag
-    {
-        return $this->createQueryBuilder('t')
-            ->andWhere('t.exampleField = :val')
-            ->setParameter('val', $value)
+        return $qb
             ->getQuery()
-            ->getOneOrNullResult()
-        ;
+            ->getResult();
     }
-    */
 }

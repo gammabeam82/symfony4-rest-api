@@ -3,11 +3,13 @@
 namespace App\RestController;
 
 use App\Entity\Category;
+use App\Repository\CategoryRepository;
 use App\Request\Category\CreateCategoryRequest;
 use App\Request\Category\UpdateCategoryRequest;
 use App\Service\CategoryService;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\Controller\FOSRestController;
+use FOS\RestBundle\Request\ParamFetcher;
 use FOS\RestBundle\View\View;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
@@ -88,15 +90,19 @@ class CategoryController extends FOSRestController
     }
 
     /**
-     * @Rest\Get("/", name="get_all_categories")
+     * @Rest\Get("/", name="get_categories")
      * @Rest\View(serializerGroups={"category_list", "category_posts"})
+     * @Rest\QueryParam(name="page", requirements="\d+", default="1")
+     * @Rest\QueryParam(name="limit", requirements="\d+", default="10")
+     * @Rest\QueryParam(name="order", requirements="(asc|desc)", allowBlank=false, default="asc")
      *
-     * @param CategoryService $service
+     * @param ParamFetcher $paramFetcher
+     * @param CategoryRepository $repo
      *
      * @return View
      */
-    public function getCategoriesAction(CategoryService $service): View
+    public function getCategoriesAction(ParamFetcher $paramFetcher, CategoryRepository $repo): View
     {
-        return View::create($service->getAllCategories(), Response::HTTP_OK);
+        return View::create($repo->findByParams($paramFetcher), Response::HTTP_OK);
     }
 }

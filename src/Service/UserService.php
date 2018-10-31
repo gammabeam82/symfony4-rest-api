@@ -101,12 +101,4 @@ class UserService
     {
         $this->manager->deleteUser($user);
     }
-
-    /**
-     * @return User[]
-     */
-    public function getAllUsers(): array
-    {
-        return $this->repo->findAll();
-    }
 }

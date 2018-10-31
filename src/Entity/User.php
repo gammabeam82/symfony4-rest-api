@@ -49,6 +49,7 @@ class User extends BaseUser
     protected $avatar;
 
     /**
+     * @Groups({"user_details", "user_posts"})
      * @ORM\OneToMany(targetEntity="App\Entity\Post", mappedBy="user", orphanRemoval=true)
      */
     private $posts;

@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Post;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use FOS\RestBundle\Request\ParamFetcherInterface;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 
 /**
@@ -20,45 +21,44 @@ class PostRepository extends ServiceEntityRepository
     }
 
     /**
-     * @param array $params
+     * @param ParamFetcherInterface $paramFetcher
      *
-     * @return array
+     * @return Post[]
      */
-    public function findByParams(array $params): array
+    public function findByParams(ParamFetcherInterface $paramFetcher): array
     {
         $qb = $this->createQueryBuilder('p')
-            ->orderBy('p.id', $params['order'])
-            ->setFirstResult($params['offset'])
-            ->setMaxResults($params['limit']);
+            ->orderBy('p.id', $paramFetcher->get('order'))
+            ->setFirstResult(($paramFetcher->get('page') - 1) * $paramFetcher->get('limit'))
+            ->setMaxResults($paramFetcher->get('limit'));
 
-
-        if (false !== array_key_exists('query', $params)) {
+        if (false === empty($paramFetcher->get('query'))) {
             $expr = $qb->expr()->orX(
                 'LOWER(p.title) LIKE :query',
                 'LOWER(p.article) LIKE :query'
             );
             $qb
                 ->andWhere($expr)
-                ->setParameter('query', sprintf("%%%s%%", mb_strtolower($params['query'])));
+                ->setParameter('query', sprintf("%%%s%%", mb_strtolower($paramFetcher->get('query'))));
         }
 
-        if (false !== array_key_exists('user', $params)) {
+        if (null !== $paramFetcher->get('user')) {
             $qb
                 ->andWhere('p.user in (:user)')
-                ->setParameter('user', $params['user']);
+                ->setParameter('user', $paramFetcher->get('user'));
         }
 
-        if (false !== array_key_exists('category', $params)) {
+        if (null !== $paramFetcher->get('category')) {
             $qb
                 ->andWhere('p.category in (:category)')
-                ->setParameter('category', $params['category']);
+                ->setParameter('category', $paramFetcher->get('category'));
         }
 
-        if (false !== array_key_exists('tags', $params)) {
+        if (null !== $paramFetcher->get('tags')) {
             $qb
-                ->join('p.tags', 't')
+                ->leftJoin('p.tags', 't')
                 ->andWhere('t.id in (:tags)')
-                ->setParameter('tags', $params['tags']);
+                ->setParameter('tags', $paramFetcher->get('tags'));
         }
 
         return $qb

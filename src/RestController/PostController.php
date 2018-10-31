@@ -4,6 +4,7 @@ namespace App\RestController;
 
 use App\Entity\Post;
 use App\Entity\User;
+use App\Repository\PostRepository;
 use App\Request\Post\CreatePostRequest;
 use App\Request\Post\UpdatePostRequest;
 use App\Security\Actions;
@@ -103,18 +104,19 @@ class PostController extends FOSRestController
      * @Rest\View(serializerGroups={"post_list", "category_list", "user_list", "tag_list"})
      * @Rest\QueryParam(name="query", nullable=true, requirements="[\w]{3,}")
      * @Rest\QueryParam(name="page", requirements="\d+", default="1")
+     * @Rest\QueryParam(name="limit", requirements="\d+", default="10")
      * @Rest\QueryParam(name="user", requirements="\d+", map=true)
      * @Rest\QueryParam(name="category", requirements="\d+", map=true)
      * @Rest\QueryParam(name="tags", requirements="\d+", map=true)
      * @Rest\QueryParam(name="order", requirements="(asc|desc)", allowBlank=false, default="desc")
      *
      * @param ParamFetcher $paramFetcher
-     * @param PostService $service
+     * @param PostRepository $repo
      *
      * @return View
      */
-    public function getPostsAction(ParamFetcher $paramFetcher, PostService $service): View
+    public function getPostsAction(ParamFetcher $paramFetcher, PostRepository $repo): View
     {
-        return View::create($service->getFilteredPosts($paramFetcher), Response::HTTP_OK);
+        return View::create($repo->findByParams($paramFetcher), Response::HTTP_OK);
     }
 }

@@ -3,7 +3,6 @@
 namespace App\Service;
 
 use App\Entity\Category;
-use App\Repository\CategoryRepository;
 use App\Request\Category\CreateCategoryRequest;
 use App\Request\Category\UpdateCategoryRequest;
 use Doctrine\ORM\EntityManagerInterface;
@@ -16,20 +15,13 @@ class CategoryService
     private $em;
 
     /**
-     * @var CategoryRepository
-     */
-    private $repo;
-
-    /**
      * CategoryService constructor.
      *
      * @param EntityManagerInterface $em
-     * @param CategoryRepository $repo
      */
-    public function __construct(EntityManagerInterface $em, CategoryRepository $repo)
+    public function __construct(EntityManagerInterface $em)
     {
         $this->em = $em;
-        $this->repo = $repo;
     }
 
     /**
@@ -66,13 +58,5 @@ class CategoryService
     {
         $this->em->remove($category);
         $this->em->flush();
-    }
-
-    /**
-     * @return Category[]
-     */
-    public function getAllCategories(): array
-    {
-        return $this->repo->findAll();
     }
 }

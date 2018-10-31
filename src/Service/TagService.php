@@ -3,7 +3,6 @@
 namespace App\Service;
 
 use App\Entity\Tag;
-use App\Repository\TagRepository;
 use App\Request\Tag\CreateTagRequest;
 use App\Request\Tag\UpdateTagRequest;
 use Doctrine\ORM\EntityManagerInterface;
@@ -16,20 +15,13 @@ class TagService
     private $em;
 
     /**
-     * @var TagRepository
-     */
-    private $repo;
-
-    /**
      * TagService constructor.
      *
      * @param EntityManagerInterface $em
-     * @param TagRepository $repo
      */
-    public function __construct(EntityManagerInterface $em, TagRepository $repo)
+    public function __construct(EntityManagerInterface $em)
     {
         $this->em = $em;
-        $this->repo = $repo;
     }
 
     /**
@@ -66,13 +58,5 @@ class TagService
     {
         $this->em->remove($tag);
         $this->em->flush();
-    }
-
-    /**
-     * @return Tag[]
-     */
-    public function getAllTags(): array
-    {
-        return $this->repo->findAll();
     }
 }

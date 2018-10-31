@@ -3,6 +3,7 @@
 namespace App\RestController;
 
 use App\Entity\User;
+use App\Repository\UserRepository;
 use App\Request\User\ChangeAvatarRequest;
 use App\Request\User\ChangeEmailRequest;
 use App\Request\User\ChangePasswordRequest;
@@ -12,6 +13,7 @@ use App\Service\Uploader;
 use App\Service\UserService;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\Controller\FOSRestController;
+use FOS\RestBundle\Request\ParamFetcher;
 use FOS\RestBundle\View\View;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
@@ -134,7 +136,7 @@ class UserController extends FOSRestController
 
     /**
      * @Rest\Get("/{id}", name="get_single_user", requirements={"id"="\d+"})
-     * @Rest\View(serializerGroups={"user_details"})
+     * @Rest\View(serializerGroups={"user_details", "user_posts"})
      * @ParamConverter("user", class="App:User")
      *
      * @param User $user
@@ -147,15 +149,19 @@ class UserController extends FOSRestController
     }
 
     /**
-     * @Rest\Get("/", name="get_all_users")
+     * @Rest\Get("/", name="get_users")
      * @Rest\View(serializerGroups={"user_list"})
+     * @Rest\QueryParam(name="page", requirements="\d+", default="1")
+     * @Rest\QueryParam(name="limit", requirements="\d+", default="10")
+     * @Rest\QueryParam(name="order", requirements="(asc|desc)", allowBlank=false, default="asc")
      *
-     * @param UserService $service
+     * @param ParamFetcher $paramFetcher
+     * @param UserRepository $repo
      *
      * @return View
      */
-    public function getUsersAction(UserService $service): View
+    public function getUsersAction(ParamFetcher $paramFetcher, UserRepository $repo): View
     {
-        return View::create($service->getAllUsers(), Response::HTTP_OK);
+        return View::create($repo->findByParams($paramFetcher), Response::HTTP_OK);
     }
 }

@@ -3,11 +3,13 @@
 namespace App\RestController;
 
 use App\Entity\Tag;
+use App\Repository\TagRepository;
 use App\Request\Tag\CreateTagRequest;
 use App\Request\Tag\UpdateTagRequest;
 use App\Service\TagService;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\Controller\FOSRestController;
+use FOS\RestBundle\Request\ParamFetcher;
 use FOS\RestBundle\View\View;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
@@ -88,15 +90,19 @@ class TagController extends FOSRestController
     }
 
     /**
-     * @Rest\Get("/", name="get_all_tags")
+     * @Rest\Get("/", name="get_tags")
      * @Rest\View(serializerGroups={"tag_list", "tag_posts"})
+     * @Rest\QueryParam(name="page", requirements="\d+", default="1")
+     * @Rest\QueryParam(name="limit", requirements="\d+", default="10")
+     * @Rest\QueryParam(name="order", requirements="(asc|desc)", allowBlank=false, default="asc")
      *
-     * @param TagService $service
+     * @param ParamFetcher $paramFetcher
+     * @param TagRepository $repo
      *
      * @return View
      */
-    public function getCategoriesAction(TagService $service): View
+    public function getTagsAction(ParamFetcher $paramFetcher, TagRepository $repo): View
     {
-        return View::create($service->getAllTags(), Response::HTTP_OK);
+        return View::create($repo->findByParams($paramFetcher), Response::HTTP_OK);
     }
 }

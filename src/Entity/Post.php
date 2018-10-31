@@ -23,7 +23,8 @@ class Post
      *     "tag_list",
      *     "tag_details",
      *     "category_posts",
-     *     "tag_posts"
+     *     "tag_posts",
+     *     "user_posts"
      * })
      * @ORM\Id()
      * @ORM\GeneratedValue()
@@ -38,7 +39,8 @@ class Post
      *     "category_details",
      *     "tag_details",
      *     "category_posts",
-     *     "tag_posts"
+     *     "tag_posts",
+     *     "user_posts"
      * })
      * @ORM\Column(type="string", length=255)
      */
