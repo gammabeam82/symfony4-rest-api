@@ -23,7 +23,7 @@ security:
                 require_previous_session: false
 
         register:
-            pattern: ^/api/v1/users/register$
+            pattern: ^/api/v1/users/$
             stateless: true
             anonymous: true
 
@@ -46,5 +46,5 @@ security:
     access_control:
         - { path: ^/api/doc, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/api/v1/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/api/v1/users/register$, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/api/v1/users/$, roles: IS_AUTHENTICATED_ANONYMOUSLY, methods: [POST] }
         - { path: ^/api, roles: IS_AUTHENTICATED_FULLY }

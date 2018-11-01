@@ -26,7 +26,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class UserController extends FOSRestController
 {
     /**
-     * @Rest\Post("/register", name="create_user")
+     * @Rest\Post("/", name="create_user")
      * @Rest\View(serializerGroups={"user_details"})
      *
      * @param CreateUserRequest $userRequest
