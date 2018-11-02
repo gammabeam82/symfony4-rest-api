@@ -24,7 +24,7 @@ security:
 
         doc:
             pattern: ^/api/doc
-            anonymous: true
+            security: false
 
         api:
             pattern:   ^/api
@@ -43,5 +43,4 @@ security:
         - { path: ^/api/doc, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/api/v1/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/api/v1/users/$, roles: IS_AUTHENTICATED_ANONYMOUSLY, methods: [POST] }
-        - { path: ^/api/v1/users, roles: IS_AUTHENTICATED_FULLY }
         - { path: ^/api, roles: IS_AUTHENTICATED_FULLY }

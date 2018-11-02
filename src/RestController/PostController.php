@@ -69,7 +69,7 @@ class PostController extends FOSRestController
 
     /**
      * @Rest\Get("/{id}", name="get_single_post")
-     * @Rest\View(serializerGroups={"post_details", "category_list", "user_list"})
+     * @Rest\View(serializerGroups={"post_details", "category_list", "user_list", "tag_list"})
      * @ParamConverter("post", class="App:Post")
      *
      * @param Post $post

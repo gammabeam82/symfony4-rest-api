@@ -227,9 +227,9 @@ class Post
     }
 
     /**
-     * @return Collection|Tag[]
+     * @return Collection|null
      */
-    public function getTags(): Collection
+    public function getTags(): ?Collection
     {
         return $this->tags;
     }
@@ -243,16 +243,23 @@ class Post
     {
         $this->tags = $tags;
 
-        foreach($this->tags as $tag) {
-            $tag->addPost($this);
+        if (null !== $this->tags) {
+            foreach ($this->tags as $tag) {
+                $tag->addPost($this);
+            }
         }
 
         return $this;
     }
 
+    /**
+     * @param Tag $tag
+     *
+     * @return Post
+     */
     public function addTag(Tag $tag): self
     {
-        if (!$this->tags->contains($tag)) {
+        if (false === $this->tags->contains($tag)) {
             $this->tags[] = $tag;
             $tag->addPost($this);
         }
@@ -260,9 +267,14 @@ class Post
         return $this;
     }
 
+    /**
+     * @param Tag $tag
+     *
+     * @return Post
+     */
     public function removeTag(Tag $tag): self
     {
-        if ($this->tags->contains($tag)) {
+        if (false !== $this->tags->contains($tag)) {
             $this->tags->removeElement($tag);
             $tag->removePost($this);
         }
@@ -270,11 +282,19 @@ class Post
         return $this;
     }
 
+    /**
+     * @return \DateTimeInterface|null
+     */
     public function getUpdatedAt(): ?\DateTimeInterface
     {
         return $this->updatedAt;
     }
 
+    /**
+     * @param \DateTimeInterface $updatedAt
+     *
+     * @return Post
+     */
     public function setUpdatedAt(\DateTimeInterface $updatedAt): self
     {
         $this->updatedAt = $updatedAt;
