@@ -22,6 +22,12 @@ class CreatePostRequest extends RequestObject
 
     /**
      * @Assert\NotBlank()
+     * @Assert\Length(min=1)
+     */
+    public $summary;
+
+    /**
+     * @Assert\NotBlank()
      * @Assert\Length(min=3)
      */
     public $article;

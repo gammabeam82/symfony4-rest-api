@@ -35,6 +35,7 @@ class PostRepository extends ServiceEntityRepository
         if (false === empty($paramFetcher->get('query'))) {
             $expr = $qb->expr()->orX(
                 'LOWER(p.title) LIKE :query',
+                'LOWER(p.summary) LIKE :query',
                 'LOWER(p.article) LIKE :query'
             );
             $qb

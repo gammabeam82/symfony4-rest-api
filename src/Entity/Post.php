@@ -92,6 +92,12 @@ class Post
      */
     private $updatedAt;
 
+    /**
+     * @Groups({"post_list", "post_details"})
+     * @ORM\Column(type="text")
+     */
+    private $summary;
+
     public function __construct()
     {
         $this->tags = new ArrayCollection();
@@ -108,6 +114,7 @@ class Post
 
         $post
             ->setTitle($dto->title)
+            ->setSummary($dto->summary)
             ->setCreatedAt($dto->createdAt)
             ->setUpdatedAt($dto->updatedAt)
             ->setArticle($dto->article)
@@ -126,6 +133,7 @@ class Post
     {
         $this
             ->setTitle($dto->title)
+            ->setSummary($dto->summary)
             ->setArticle($dto->article)
             ->setCategory($dto->category)
             ->setUpdatedAt($dto->updatedAt)
@@ -298,6 +306,26 @@ class Post
     public function setUpdatedAt(\DateTimeInterface $updatedAt): self
     {
         $this->updatedAt = $updatedAt;
+
+        return $this;
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getSummary(): ?string
+    {
+        return $this->summary;
+    }
+
+    /**
+     * @param string $summary
+     *
+     * @return Post
+     */
+    public function setSummary(string $summary): self
+    {
+        $this->summary = $summary;
 
         return $this;
     }

@@ -26,7 +26,7 @@ class PostController extends FOSRestController
 {
     /**
      * @Rest\Post("/", name="create_post")
-     * @Rest\View(serializerGroups={"post_details", "category_list", "user_list", "tag_list"})
+     * @Rest\View(serializerGroups={"post_details", "category_list", "tag_list", "user_list"})
      *
      * @param CreatePostRequest $postRequest
      * @param PostService $service
@@ -51,7 +51,7 @@ class PostController extends FOSRestController
     /**
      * @IsGranted(Actions::EDIT, subject="post")
      * @Rest\Patch("/{id}", name="update_post")
-     * @Rest\View(serializerGroups={"post_details", "category_list", "user_list"})
+     * @Rest\View(serializerGroups={"post_details", "category_list", "tag_list", "user_list"})
      * @ParamConverter("post", class="App:Post")
      *
      * @param UpdatePostRequest $postRequest
@@ -69,7 +69,7 @@ class PostController extends FOSRestController
 
     /**
      * @Rest\Get("/{id}", name="get_single_post")
-     * @Rest\View(serializerGroups={"post_details", "category_list", "user_list", "tag_list"})
+     * @Rest\View(serializerGroups={"post_details", "category_list", "tag_list", "user_list"})
      * @ParamConverter("post", class="App:Post")
      *
      * @param Post $post
@@ -101,7 +101,7 @@ class PostController extends FOSRestController
 
     /**
      * @Rest\Get("/", name="get_posts")
-     * @Rest\View(serializerGroups={"post_list", "category_list", "user_list", "tag_list"})
+     * @Rest\View(serializerGroups={"post_list", "category_list", "tag_list", "user_list"})
      * @Rest\QueryParam(name="query", nullable=true, requirements="[\w]{3,}")
      * @Rest\QueryParam(name="page", requirements="\d+", default="1")
      * @Rest\QueryParam(name="limit", requirements="\d+", default="10")

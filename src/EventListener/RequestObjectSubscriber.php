@@ -73,12 +73,12 @@ class RequestObjectSubscriber implements EventSubscriberInterface
                     $entity = $this->findEntity($repo, $id);
                     $collection->add($entity);
                 }
-                $entity = $collection;
+                $data = $collection;
             } else {
-                $entity = $this->findEntity($repo, $value);
+                $data = $this->findEntity($repo, $value);
             }
 
-            $this->accessor->setValue($dto, $field, $entity);
+            $this->accessor->setValue($dto, $field, $data);
         }
 
         /** @var FileBag $files */
