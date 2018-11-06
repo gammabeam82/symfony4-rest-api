@@ -86,7 +86,7 @@ nelmio_api_doc:
                                       type: string
                                   email:
                                       type: string
-                        - name: imagefile
+                        - name: avatar
                           description: Jpeg or png image
                           in: formData
                           required: false
@@ -310,7 +310,7 @@ nelmio_api_doc:
                           required: true
                           type: string
                           default: Bearer token
-                        - name: imagefile
+                        - name: avatar
                           description: Jpeg or png image
                           in: formData
                           required: true

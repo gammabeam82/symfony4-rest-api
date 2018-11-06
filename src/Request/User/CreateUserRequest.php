@@ -8,7 +8,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 class CreateUserRequest extends RequestObject
 {
-    public const UPLOADS = ['imagefile'];
+    public const UPLOADS = ['avatar'];
 
     /**
      * @var string
@@ -61,11 +61,6 @@ class CreateUserRequest extends RequestObject
      *     maxSize="1024k",
      *     mimeTypes={"image/jpeg", "image/png"}
      * )
-     */
-    public $imagefile;
-
-    /**
-     * @var string
      */
     public $avatar;
 }

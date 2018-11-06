@@ -9,7 +9,6 @@ use App\Request\User\ChangeEmailRequest;
 use App\Request\User\ChangePasswordRequest;
 use App\Request\User\CreateUserRequest;
 use App\Security\Actions;
-use App\Service\Uploader;
 use App\Service\UserService;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\Controller\FOSRestController;
@@ -105,13 +104,13 @@ class UserController extends FOSRestController
      * @ParamConverter("user", class="App:User")
      *
      * @param User $user
-     * @param Uploader $service
+     * @param UserService $service
      *
      * @return View
      */
-    public function deleteAvatarAction(User $user, Uploader $service): View
+    public function deleteAvatarAction(User $user, UserService $service): View
     {
-        $service->removeAvatar($user);
+        $service->deleteUserAvatar($user);
 
         return View::create($user, Response::HTTP_OK);
     }

@@ -6,6 +6,7 @@
 parameters:
     locale: 'en'
     avatars_dir: '%kernel.project_dir%/public/uploads/avatars'
+    posts_dir: '%kernel.project_dir%/public/uploads/posts'
 
 services:
     # default configuration for services in *this* file
@@ -35,7 +36,7 @@ services:
         class: Symfony\Component\PropertyAccess\PropertyAccessor
         factory: [Symfony\Component\PropertyAccess\PropertyAccess, createPropertyAccessor]
 
-    App\Service\Uploader:
+    App\Service\UserService:
         arguments:
             $directory: '%avatars_dir%'
 

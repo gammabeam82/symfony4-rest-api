@@ -43,7 +43,7 @@ class User extends BaseUser
     protected $roles;
 
     /**
-     * @Groups({"user_details"})
+     * @Groups({"user_list", "user_details"})
      * @ORM\Column(type="string", length=255, nullable=true)
      */
     protected $avatar;

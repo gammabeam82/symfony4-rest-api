@@ -2,73 +2,67 @@
 
 namespace App\Service;
 
-use App\Entity\User;
 use App\Request\RequestObject;
-use App\Request\User\ChangeAvatarRequest;
-use App\Request\User\CreateUserRequest;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
 
 class Uploader
 {
     /**
-     * @var string
+     * @var PropertyAccessorInterface
      */
-    private $directory;
+    private $accessor;
 
     /**
      * Uploader constructor.
      *
-     * @param string $directory
+     * @param PropertyAccessorInterface $accessor
      */
-    public function __construct(string $directory)
+    public function __construct(PropertyAccessorInterface $accessor)
     {
-        $this->directory = $directory;
+        $this->accessor = $accessor;
     }
 
     /**
      * @param RequestObject $requestObject
-     * @param User|null $user
+     * @param string $directory
      */
-    public function upload(RequestObject $requestObject, User $user = null): void
+    public function upload(RequestObject $requestObject, string $directory): void
     {
-        /**
-         * @var CreateUserRequest | ChangeAvatarRequest $requestObject
-         * @var UploadedFile $file
-         */
-        $file = $requestObject->imagefile;
+        $uploads = $requestObject->getUploads();
 
-        if (false === $file instanceof UploadedFile) {
-            throw new BadRequestHttpException();
+        if (0 === count($uploads)) {
+            return;
         }
 
-        try {
-            $filename = $this->generateName($file);
-            $file->move($this->directory, $filename);
+        foreach ($uploads as $field) {
+            $file = $this->accessor->getValue($requestObject, $field);
 
-            if (null !== $user) {
-                $this->removeAvatar($user);
+            if (false === $file instanceof UploadedFile) {
+                continue;
             }
 
-            $requestObject->avatar = $filename;
-        } catch (FileException $e) {
-            throw new BadRequestHttpException();
+            try {
+                $filename = $this->generateName($file);
+                $file->move($directory, $filename);
+                $this->accessor->setValue($requestObject, $field, $filename);
+            } catch (FileException $e) {
+                throw new BadRequestHttpException();
+            }
         }
     }
 
     /**
-     * @param User $user
+     * @param string $file
+     * @param string $directory
      */
-    public function removeAvatar(User $user): void
+    public function removeFile(string $file, string $directory): void
     {
-        if (null === $user->getAvatar()) {
-            return;
-        }
+        $filename = join(DIRECTORY_SEPARATOR, [$directory, $file]);
 
-        $filename = join(DIRECTORY_SEPARATOR, [$this->directory, $user->getAvatar()]);
-
-        if (false !== file_exists($filename)) {
+        if (false !== file_exists($filename) && false !== is_file($filename)) {
             unlink($filename);
         }
     }

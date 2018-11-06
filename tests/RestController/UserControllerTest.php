@@ -45,14 +45,14 @@ class UserControllerTest extends WebTestCase
 
     public function testCreateUser(): void
     {
-        $this->client->request('POST', '/api/v1/users/register', self::USER);
+        $this->client->request('POST', '/api/v1/users/', self::USER);
 
         $this->assertEquals(201, $this->client->getResponse()->getStatusCode());
     }
 
     public function testCreateUserWithError(): void
     {
-        $this->client->request('POST', '/api/v1/users/register', self::USER);
+        $this->client->request('POST', '/api/v1/users/', self::USER);
 
         $this->assertEquals(400, $this->client->getResponse()->getStatusCode());
     }
@@ -107,7 +107,7 @@ class UserControllerTest extends WebTestCase
     public function testUpdateAvatar(): void
     {
         $this->client->request('PATCH', '/api/v1/users/2/change_avatar', [], [
-            'imagefile' => $this->getMockFile()
+            'avatar' => $this->getMockFile()
         ], [
             'HTTP_Authorization' => $this->getToken(self::USER)
         ]);

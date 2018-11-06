@@ -28,17 +28,24 @@ class UserService
     private $uploader;
 
     /**
+     * @var string
+     */
+    private $directory;
+
+    /**
      * UserService constructor.
      *
      * @param UserManagerInterface $manager
      * @param UserRepository $repo
      * @param Uploader $uploader
+     * @param string $directory
      */
-    public function __construct(UserManagerInterface $manager, UserRepository $repo, Uploader $uploader)
+    public function __construct(UserManagerInterface $manager, UserRepository $repo, Uploader $uploader, string $directory)
     {
         $this->manager = $manager;
         $this->repo = $repo;
         $this->uploader = $uploader;
+        $this->directory = $directory;
     }
 
     /**
@@ -48,9 +55,7 @@ class UserService
      */
     public function createUser(CreateUserRequest $userRequest): User
     {
-        if (null !== $userRequest->imagefile) {
-            $this->uploader->upload($userRequest);
-        }
+        $this->uploader->upload($userRequest, $this->directory);
 
         $user = User::createFromDTO($userRequest);
 
@@ -87,11 +92,22 @@ class UserService
      */
     public function changeUserAvatar(User $user, ChangeAvatarRequest $dto): void
     {
-        $this->uploader->upload($dto, $user);
+        $this->uploader->upload($dto, $this->directory);
+        if (null !== $user->getAvatar()) {
+            $this->uploader->removeFile($user->getAvatar(), $this->directory);
+        }
 
         $user->changeAvatar($dto);
 
         $this->manager->updateUser($user);
+    }
+
+    /**
+     * @param User $user
+     */
+    public function deleteUserAvatar(User $user): void
+    {
+        $this->uploader->removeFile($user->getAvatar(), $this->directory);
     }
 
     /**
