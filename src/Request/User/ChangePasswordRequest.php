@@ -26,4 +26,14 @@ class ChangePasswordRequest extends RequestObject
      * @var string
      */
     public $repeatedPassword;
+
+    /**
+     * @Assert\DateTime()
+     */
+    public $updatedAt;
+
+    public function __construct()
+    {
+        $this->updatedAt = new \DateTime('now');
+    }
 }

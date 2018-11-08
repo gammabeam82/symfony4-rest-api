@@ -7,7 +7,13 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 class ChangeAvatarRequest extends RequestObject
 {
-    public const UPLOADS = ['avatar'];
+    public const FILES = [
+        'avatar' => [
+            'class' => null,
+            'fileProperty' => 'image',
+            'collection' => false
+        ]
+    ];
 
     /**
      * @Assert\File(
@@ -15,5 +21,15 @@ class ChangeAvatarRequest extends RequestObject
      *     mimeTypes={"image/jpeg", "image/png"}
      * )
      */
-    public $avatar;
+    public $image;
+
+    /**
+     * @Assert\DateTime()
+     */
+    public $updatedAt;
+
+    public function __construct()
+    {
+        $this->updatedAt = new \DateTime('now');
+    }
 }

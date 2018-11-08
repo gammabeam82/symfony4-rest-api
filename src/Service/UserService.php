@@ -9,6 +9,7 @@ use App\Request\User\ChangeEmailRequest;
 use App\Request\User\ChangePasswordRequest;
 use App\Request\User\CreateUserRequest;
 use FOS\UserBundle\Model\UserManagerInterface;
+use Vich\UploaderBundle\Handler\UploadHandler;
 
 class UserService
 {
@@ -23,29 +24,22 @@ class UserService
     private $repo;
 
     /**
-     * @var Uploader
+     * @var UploadHandler
      */
-    private $uploader;
-
-    /**
-     * @var string
-     */
-    private $directory;
+    private $uploadHandler;
 
     /**
      * UserService constructor.
      *
      * @param UserManagerInterface $manager
      * @param UserRepository $repo
-     * @param Uploader $uploader
-     * @param string $directory
+     * @param UploadHandler $uploadHandler
      */
-    public function __construct(UserManagerInterface $manager, UserRepository $repo, Uploader $uploader, string $directory)
+    public function __construct(UserManagerInterface $manager, UserRepository $repo, UploadHandler $uploadHandler)
     {
         $this->manager = $manager;
         $this->repo = $repo;
-        $this->uploader = $uploader;
-        $this->directory = $directory;
+        $this->uploadHandler = $uploadHandler;
     }
 
     /**
@@ -55,8 +49,6 @@ class UserService
      */
     public function createUser(CreateUserRequest $userRequest): User
     {
-        $this->uploader->upload($userRequest, $this->directory);
-
         $user = User::createFromDTO($userRequest);
 
         $this->manager->updateUser($user);
@@ -92,11 +84,6 @@ class UserService
      */
     public function changeUserAvatar(User $user, ChangeAvatarRequest $dto): void
     {
-        $this->uploader->upload($dto, $this->directory);
-        if (null !== $user->getAvatar()) {
-            $this->uploader->removeFile($user->getAvatar(), $this->directory);
-        }
-
         $user->changeAvatar($dto);
 
         $this->manager->updateUser($user);
@@ -107,7 +94,9 @@ class UserService
      */
     public function deleteUserAvatar(User $user): void
     {
-        $this->uploader->removeFile($user->getAvatar(), $this->directory);
+        $this->uploadHandler->remove($user, 'image');
+
+        $this->manager->updateUser($user);
     }
 
     /**

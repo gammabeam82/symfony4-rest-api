@@ -36,16 +36,6 @@ services:
         class: Symfony\Component\PropertyAccess\PropertyAccessor
         factory: [Symfony\Component\PropertyAccess\PropertyAccess, createPropertyAccessor]
 
-    App\Service\UserService:
-        arguments:
-            $directory: '%avatars_dir%'
-
-    App\EventListener\UserSubscriber:
-        arguments:
-            $directory: '%avatars_dir%'
-        tags:
-            - { name: doctrine.event_listener, event: preRemove }
-
     Faker\Generator:
         class: Faker\Generator
         factory: [Faker\Factory, create]

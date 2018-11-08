@@ -85,16 +85,14 @@ class RequestObjectSubscriber implements EventSubscriberInterface
         /** @var FileBag $files */
         $files = $event->getRequest()->files;
 
-        /*
-        foreach ($dto->getUploads() as $field) {
-            if (null !== $files->get($field)) {
-                $this->accessor->setValue($dto, $field, $files->get($field));
-            }
-        }*/
-
         foreach ($dto->getFiles() as $file => $config) {
             if (null === $files->get($file)) {
                 continue;
+            }
+
+            if (null === $config['class']) {
+                $this->accessor->setValue($dto, $config['fileProperty'], $files->get($file));
+                return;
             }
 
             $reflectionClass = new \ReflectionClass($config['class']);

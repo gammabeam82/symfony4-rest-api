@@ -25,4 +25,14 @@ class ChangeEmailRequest extends RequestObject
      * )
      */
     public $email;
+
+    /**
+     * @Assert\DateTime()
+     */
+    public $updatedAt;
+
+    public function __construct()
+    {
+        $this->updatedAt = new \DateTime('now');
+    }
 }

@@ -8,7 +8,13 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 class CreateUserRequest extends RequestObject
 {
-    public const UPLOADS = ['avatar'];
+    public const FILES = [
+        'avatar' => [
+            'class' => null,
+            'fileProperty' => 'image',
+            'collection' => false
+        ]
+    ];
 
     /**
      * @var string
@@ -62,5 +68,21 @@ class CreateUserRequest extends RequestObject
      *     mimeTypes={"image/jpeg", "image/png"}
      * )
      */
-    public $avatar;
+    public $image;
+
+    /**
+     * @Assert\DateTime()
+     */
+    public $createdAt;
+
+    /**
+     * @Assert\DateTime()
+     */
+    public $updatedAt;
+
+    public function __construct()
+    {
+        $this->createdAt = new \DateTime('now');
+        $this->updatedAt = new \DateTime('now');
+    }
 }

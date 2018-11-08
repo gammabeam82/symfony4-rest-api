@@ -11,9 +11,12 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use FOS\UserBundle\Model\User as BaseUser;
 use FOS\UserBundle\Model\UserInterface;
+use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 /**
+ * @Vich\Uploadable()
  * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
  * @ORM\Table(name="fos_user")
  */
@@ -49,34 +52,35 @@ class User extends BaseUser
     protected $avatar;
 
     /**
+     * @Vich\UploadableField(mapping="avatars", fileNameProperty="avatar")
+     *
+     * @var File
+     */
+    private $image;
+
+    /**
      * @Groups({"user_details", "user_posts"})
      * @ORM\OneToMany(targetEntity="App\Entity\Post", mappedBy="user", orphanRemoval=true)
      */
     private $posts;
 
+    /**
+     * @Groups({"user_details"})
+     * @ORM\Column(type="datetime")
+     */
+    private $createdAt;
+
+    /**
+     * @Groups({"user_details"})
+     * @ORM\Column(type="datetime")
+     */
+    private $updatedAt;
+
+
     public function __construct()
     {
         parent::__construct();
         $this->posts = new ArrayCollection();
-    }
-
-    /**
-     * @param string|null $avatar
-     *
-     * @return User
-     */
-    public function setAvatar(string $avatar = null): User
-    {
-        $this->avatar = $avatar;
-        return $this;
-    }
-
-    /**
-     * @return null|string
-     */
-    public function getAvatar(): ?string
-    {
-        return $this->avatar;
     }
 
     /**
@@ -93,7 +97,9 @@ class User extends BaseUser
             ->setEmail($dto->email)
             ->setPlainPassword($dto->password)
             ->addRole(UserInterface::ROLE_DEFAULT)
-            ->setAvatar($dto->avatar)
+            ->setImage($dto->image)
+            ->setCreatedAt($dto->createdAt)
+            ->setUpdatedAt($dto->updatedAt)
             ->setEnabled(true);
 
         return $user;
@@ -104,7 +110,9 @@ class User extends BaseUser
      */
     public function changePassword(ChangePasswordRequest $dto): void
     {
-        $this->setPlainPassword($dto->password);
+        $this
+            ->setUpdatedAt($dto->updatedAt)
+            ->setPlainPassword($dto->password);
     }
 
     /**
@@ -112,7 +120,9 @@ class User extends BaseUser
      */
     public function changeEmail(ChangeEmailRequest $dto): void
     {
-        $this->setEmail($dto->email);
+        $this
+            ->setUpdatedAt($dto->updatedAt)
+            ->setEmail($dto->email);
     }
 
     /**
@@ -120,7 +130,9 @@ class User extends BaseUser
      */
     public function changeAvatar(ChangeAvatarRequest $dto): void
     {
-        $this->setAvatar($dto->avatar);
+        $this
+            ->setUpdatedAt($dto->updatedAt)
+            ->setImage($dto->image);
     }
 
     /**
@@ -131,9 +143,14 @@ class User extends BaseUser
         return $this->posts;
     }
 
+    /**
+     * @param Post $post
+     *
+     * @return User
+     */
     public function addPost(Post $post): self
     {
-        if (!$this->posts->contains($post)) {
+        if (false === $this->posts->contains($post)) {
             $this->posts[] = $post;
             $post->setUser($this);
         }
@@ -141,15 +158,99 @@ class User extends BaseUser
         return $this;
     }
 
+    /**
+     * @param Post $post
+     *
+     * @return User
+     */
     public function removePost(Post $post): self
     {
-        if ($this->posts->contains($post)) {
+        if (false !== $this->posts->contains($post)) {
             $this->posts->removeElement($post);
-            // set the owning side to null (unless already changed)
             if ($post->getUser() === $this) {
                 $post->setUser(null);
             }
         }
+
+        return $this;
+    }
+
+    /**
+     * @param string|null $avatar
+     *
+     * @return User
+     */
+    public function setAvatar(string $avatar = null): User
+    {
+        $this->avatar = $avatar;
+
+        return $this;
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getAvatar(): ?string
+    {
+        return $this->avatar;
+    }
+
+    /**
+     * @param null|File $image
+     *
+     * @return User
+     */
+    public function setImage(?File $image = null): self
+    {
+        $this->image = $image;
+
+        return $this;
+    }
+
+    /**
+     * @return null|File
+     */
+    public function getImage(): ?File
+    {
+        return $this->image;
+    }
+
+    /**
+     * @return \DateTimeInterface|null
+     */
+    public function getCreatedAt(): ?\DateTimeInterface
+    {
+        return $this->createdAt;
+    }
+
+    /**
+     * @param \DateTimeInterface $createdAt
+     *
+     * @return User
+     */
+    public function setCreatedAt(\DateTimeInterface $createdAt): self
+    {
+        $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    /**
+     * @return \DateTimeInterface|null
+     */
+    public function getUpdatedAt(): ?\DateTimeInterface
+    {
+        return $this->updatedAt;
+    }
+
+    /**
+     * @param \DateTimeInterface $updatedAt
+     *
+     * @return User
+     */
+    public function setUpdatedAt(\DateTimeInterface $updatedAt): self
+    {
+        $this->updatedAt = $updatedAt;
 
         return $this;
     }

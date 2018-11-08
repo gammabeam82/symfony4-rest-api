@@ -38,6 +38,8 @@ class UserFixtures extends Fixture
             ->setEmail('qwerty@asdfg.zx')
             ->setPlainPassword('p@ssword')
             ->setEnabled(true)
+            ->setUpdatedAt(new \DateTime('now'))
+            ->setCreatedAt(new \DateTime('now'))
             ->addRole('ROLE_ADMIN');
 
         $this->userManager->updateUser($user);
