@@ -65,7 +65,7 @@ nelmio_api_doc:
                         - application/json
                     consumes:
                         - application/json
-                        - multipart/form-data
+                        - application/x-www-form-urlencoded
                     tags:
                         - users
                     parameters:

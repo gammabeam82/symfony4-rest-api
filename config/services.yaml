@@ -49,3 +49,7 @@ services:
     Faker\Generator:
         class: Faker\Generator
         factory: [Faker\Factory, create]
+
+    App\Service\FileNamer:
+        class: App\Service\FileNamer
+        public: true

@@ -98,9 +98,16 @@ class Post
      */
     private $summary;
 
+    /**
+     * @Groups({"post_list", "post_details"})
+     * @ORM\OneToMany(targetEntity="App\Entity\PostImage", mappedBy="post", orphanRemoval=true, cascade={"persist", "remove"})
+     */
+    private $images;
+
     public function __construct()
     {
         $this->tags = new ArrayCollection();
+        $this->images = new ArrayCollection();
     }
 
     /**
@@ -119,7 +126,8 @@ class Post
             ->setUpdatedAt($dto->updatedAt)
             ->setArticle($dto->article)
             ->setCategory($dto->category)
-            ->setTags($dto->tags);
+            ->setTags($dto->tags)
+            ->setImages($dto->images);
 
         return $post;
     }
@@ -138,6 +146,12 @@ class Post
             ->setCategory($dto->category)
             ->setUpdatedAt($dto->updatedAt)
             ->setTags($dto->tags);
+
+        foreach ($dto->getFiles() as $image) {
+            /** @var PostImage $image */
+            $image->setPost($this);
+            $this->addImage($image);
+        }
 
         return $this;
     }
@@ -326,6 +340,58 @@ class Post
     public function setSummary(string $summary): self
     {
         $this->summary = $summary;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|PostImage[]
+     */
+    public function getImages(): Collection
+    {
+        return $this->images;
+    }
+
+    public function addImage(PostImage $image): self
+    {
+        if (!$this->images->contains($image)) {
+            $this->images[] = $image;
+            $image->setPost($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param PostImage $image
+     *
+     * @return Post
+     */
+    public function removeImage(PostImage $image): self
+    {
+        if ($this->images->contains($image)) {
+            $this->images->removeElement($image);
+            // set the owning side to null (unless already changed)
+            if ($image->getPost() === $this) {
+                $image->setPost(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param Collection|null $images
+     *
+     * @return Post
+     */
+    public function setImages(?Collection $images): self
+    {
+        $this->images = $images;
+
+        foreach($this->images as $image) {
+            $image->setPost($this);
+        }
 
         return $this;
     }

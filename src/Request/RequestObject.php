@@ -8,6 +8,8 @@ abstract class RequestObject implements RequestObjectInterface
 
     public const UPLOADS = [];
 
+    public const FILES = [];
+
     /**
      * @return array
      */
@@ -22,5 +24,13 @@ abstract class RequestObject implements RequestObjectInterface
     public function getUploads(): array
     {
         return static::UPLOADS;
+    }
+
+    /**
+     * @return array
+     */
+    public function getFiles(): array
+    {
+        return static::FILES;
     }
 }

@@ -50,12 +50,13 @@ class RequestObjectSubscriber implements EventSubscriberInterface
      * @param RequestObjectEvent $event
      *
      * @throws EntityNotFoundException
+     * @throws \ReflectionException
      */
     public function onNewRequest(RequestObjectEvent $event): void
     {
         $dto = $event->getRequestObject();
 
-        if (0 === count($dto->getRelations()) && 0 === count($dto->getUploads())) {
+        if (0 === count($dto->getRelations()) && 0 === count($dto->getFiles())) {
             return;
         }
 
@@ -84,12 +85,34 @@ class RequestObjectSubscriber implements EventSubscriberInterface
         /** @var FileBag $files */
         $files = $event->getRequest()->files;
 
+        /*
         foreach ($dto->getUploads() as $field) {
             if (null !== $files->get($field)) {
                 $this->accessor->setValue($dto, $field, $files->get($field));
             }
-        }
+        }*/
 
+        foreach ($dto->getFiles() as $file => $config) {
+            if (null === $files->get($file)) {
+                continue;
+            }
+
+            $reflectionClass = new \ReflectionClass($config['class']);
+
+            if (false !== $config['collection']) {
+                $collection = new ArrayCollection();
+                foreach ($files->get($file) as $uploadedFile) {
+                    $attachment = $reflectionClass->newInstance();
+                    $attachment->setFile($uploadedFile);
+                    $collection->add($attachment);
+                }
+                $this->accessor->setValue($dto, $config['fileProperty'], $collection);
+            } else {
+                $attachment = $reflectionClass->newInstance();
+                $attachment->setFile($files->get($file));
+                $this->accessor->setValue($dto, $config['fileProperty'], $attachment);
+            }
+        }
     }
 
     /**
