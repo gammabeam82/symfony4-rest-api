@@ -389,7 +389,7 @@ class Post
     {
         $this->images = $images;
 
-        foreach($this->images as $image) {
+        foreach ($this->images as $image) {
             $image->setPost($this);
         }
 

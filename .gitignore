@@ -24,3 +24,8 @@
 !/public/uploads/avatars/.gitignore
 /public/uploads/posts/
 !/public/uploads/posts/.gitignore
+
+###> squizlabs/php_codesniffer ###
+/.phpcs-cache
+/phpcs.xml
+###< squizlabs/php_codesniffer ###
