@@ -23,6 +23,8 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
 class User extends BaseUser
 {
     /**
+     * @var int
+     *
      * @Groups({"user_list", "user_details"})
      * @ORM\Id()
      * @ORM\Column(type="integer")
@@ -31,52 +33,68 @@ class User extends BaseUser
     protected $id;
 
     /**
+     * @var string
+     *
      * @Groups({"user_list", "user_details"})
      */
     protected $username;
 
     /**
+     * @var string
+     *
      * @Groups({"user_details"})
      */
     protected $email;
 
     /**
+     * @var array
+     *
      * @Groups({"user_details"})
      */
     protected $roles;
 
     /**
+     * @var string
+     *
      * @Groups({"user_list", "user_details"})
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    protected $avatar;
+    private $avatar;
 
     /**
-     * @Vich\UploadableField(mapping="avatars", fileNameProperty="avatar")
-     *
      * @var File
+     *
+     * @Vich\UploadableField(mapping="avatars", fileNameProperty="avatar")
      */
     private $image;
 
     /**
+     * @var Post[]
+     *
      * @Groups({"user_details", "user_posts"})
      * @ORM\OneToMany(targetEntity="App\Entity\Post", mappedBy="user", orphanRemoval=true)
      */
     private $posts;
 
     /**
+     * @var \DateTime
+     *
      * @Groups({"user_details"})
      * @ORM\Column(type="datetime")
      */
     private $createdAt;
 
     /**
+     * @var \DateTime
+     *
      * @Groups({"user_details"})
      * @ORM\Column(type="datetime")
      */
     private $updatedAt;
 
-
+    /**
+     * User constructor.
+     */
     public function __construct()
     {
         parent::__construct();

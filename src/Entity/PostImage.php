@@ -14,6 +14,8 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
 class PostImage
 {
     /**
+     * @var int
+     *
      * @Groups({"post_list", "post_details"})
      * @ORM\Id()
      * @ORM\GeneratedValue()
@@ -22,34 +24,49 @@ class PostImage
     private $id;
 
     /**
+     * @var Post
+     *
      * @ORM\ManyToOne(targetEntity="App\Entity\Post", inversedBy="images")
      * @ORM\JoinColumn(nullable=false)
      */
     private $post;
 
     /**
-     * @Vich\UploadableField(mapping="posts", fileNameProperty="filename")
-     *
      * @var File
+     *
+     * @Vich\UploadableField(mapping="posts", fileNameProperty="filename")
      */
     private $file;
 
     /**
+     * @var string
+     *
      * @Groups({"post_list", "post_details"})
      * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $filename;
 
+    /**
+     * @return int|null
+     */
     public function getId(): ?int
     {
         return $this->id;
     }
 
+    /**
+     * @return Post|null
+     */
     public function getPost(): ?Post
     {
         return $this->post;
     }
 
+    /**
+     * @param Post|null $post
+     *
+     * @return PostImage
+     */
     public function setPost(?Post $post): self
     {
         $this->post = $post;
@@ -57,11 +74,19 @@ class PostImage
         return $this;
     }
 
+    /**
+     * @return null|string
+     */
     public function getFilename(): ?string
     {
         return $this->filename;
     }
 
+    /**
+     * @param string|null $filename
+     *
+     * @return PostImage
+     */
     public function setFilename(string $filename = null): self
     {
         $this->filename = $filename;

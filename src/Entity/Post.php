@@ -15,6 +15,8 @@ use Symfony\Component\Serializer\Annotation\Groups;
 class Post
 {
     /**
+     * @var int
+     *
      * @Groups({
      *     "post_list",
      *     "post_details",
@@ -33,6 +35,8 @@ class Post
     private $id;
 
     /**
+     * @var string
+     *
      * @Groups({
      *     "post_list",
      *     "post_details",
@@ -47,24 +51,32 @@ class Post
     private $title;
 
     /**
+     * @var string
+     *
      * @Groups({"post_details"})
      * @ORM\Column(type="text")
      */
     private $article;
 
     /**
+     * @var \DateTimeInterface
+     *
      * @Groups({"post_list", "post_details"})
      * @ORM\Column(type="datetime")
      */
     private $createdAt;
 
     /**
+     * @var Category
+     *
      * @Groups({"post_list", "post_details"})
      * @ORM\ManyToOne(targetEntity="App\Entity\Category", inversedBy="posts")
      */
     private $category;
 
     /**
+     * @var User
+     *
      * @Groups({"post_list", "post_details"})
      * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="posts")
      * @ORM\JoinColumn(nullable=false)
@@ -72,6 +84,8 @@ class Post
     private $user;
 
     /**
+     * @var Tag[]
+     *
      * @Groups({"post_list", "post_details"})
      * @ORM\ManyToMany(targetEntity="App\Entity\Tag", inversedBy="posts", cascade={"persist"})
      * @ORM\JoinTable(
@@ -87,23 +101,31 @@ class Post
     private $tags;
 
     /**
+     * @var \DateTimeInterface
+     *
      * @Groups({"post_details"})
      * @ORM\Column(type="datetime")
      */
     private $updatedAt;
 
     /**
+     * @var string
      * @Groups({"post_list", "post_details"})
      * @ORM\Column(type="text")
      */
     private $summary;
 
     /**
+     * @var PostImage[]
+     *
      * @Groups({"post_list", "post_details"})
      * @ORM\OneToMany(targetEntity="App\Entity\PostImage", mappedBy="post", orphanRemoval=true, cascade={"persist", "remove"})
      */
     private $images;
 
+    /**
+     * Post constructor.
+     */
     public function __construct()
     {
         $this->tags = new ArrayCollection();
@@ -224,11 +246,19 @@ class Post
         return $this;
     }
 
+    /**
+     * @return Category|null
+     */
     public function getCategory(): ?Category
     {
         return $this->category;
     }
 
+    /**
+     * @param Category|null $category
+     *
+     * @return Post
+     */
     public function setCategory(?Category $category): self
     {
         $this->category = $category;
@@ -236,11 +266,19 @@ class Post
         return $this;
     }
 
+    /**
+     * @return User|null
+     */
     public function getUser(): ?User
     {
         return $this->user;
     }
 
+    /**
+     * @param User|null $user
+     *
+     * @return Post
+     */
     public function setUser(?User $user): self
     {
         $this->user = $user;
@@ -354,7 +392,7 @@ class Post
 
     public function addImage(PostImage $image): self
     {
-        if (!$this->images->contains($image)) {
+        if (false === $this->images->contains($image)) {
             $this->images[] = $image;
             $image->setPost($this);
         }
@@ -369,9 +407,8 @@ class Post
      */
     public function removeImage(PostImage $image): self
     {
-        if ($this->images->contains($image)) {
+        if (false !== $this->images->contains($image)) {
             $this->images->removeElement($image);
-            // set the owning side to null (unless already changed)
             if ($image->getPost() === $this) {
                 $image->setPost(null);
             }
