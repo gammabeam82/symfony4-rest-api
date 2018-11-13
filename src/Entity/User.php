@@ -47,7 +47,7 @@ class User extends BaseUser
     protected $email;
 
     /**
-     * @var array
+     * @var string[]
      *
      * @Groups({"user_details"})
      */
@@ -106,7 +106,7 @@ class User extends BaseUser
      *
      * @return User
      */
-    public static function createFromDTO(CreateUserRequest $dto): User
+    public static function createFromDTO(CreateUserRequest $dto): self
     {
         $user = new User;
 
@@ -198,7 +198,7 @@ class User extends BaseUser
      *
      * @return User
      */
-    public function setAvatar(string $avatar = null): User
+    public function setAvatar(string $avatar = null): self
     {
         $this->avatar = $avatar;
 

@@ -24,48 +24,67 @@ class CreatePostRequest extends RequestObject
     ];
 
     /**
+     * @var string
+     *
      * @Assert\NotBlank()
      * @Assert\Length(max=255)
      */
     public $title;
 
     /**
+     * @var string
+     *
      * @Assert\NotBlank()
      * @Assert\Length(min=1)
      */
     public $summary;
 
     /**
+     * @var string
+     *
      * @Assert\NotBlank()
      * @Assert\Length(min=3)
      */
     public $article;
 
     /**
+     * @var \DateTimeInterface
+     *
      * @Assert\DateTime()
      */
     public $createdAt;
 
     /**
+     * @var \DateTimeInterface
+     *
      * @Assert\DateTime()
      */
     public $updatedAt;
 
     /**
+     * @var Category
+     *
      * @Assert\Valid()
      */
     public $category;
 
     /**
+     * @var Tag[]
+     *
      * @Assert\Valid()
      * */
     public $tags;
 
     /**
+     * @var PostImage[]
+     *
      * @Assert\Valid()
      */
     public $images;
 
+    /**
+     * CreatePostRequest constructor.
+     */
     public function __construct()
     {
         $this->createdAt = new \DateTime('now');

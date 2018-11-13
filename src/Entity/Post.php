@@ -159,7 +159,7 @@ class Post
      *
      * @return Post
      */
-    public function updateFromDTO(UpdatePostRequest $dto): Post
+    public function updateFromDTO(UpdatePostRequest $dto): self
     {
         $this
             ->setTitle($dto->title)

@@ -34,7 +34,6 @@ class PostService
     public function create(CreatePostRequest $dto, User $user): Post
     {
         $post = Post::createFromDTO($dto);
-
         $post->setUser($user);
 
         $this->em->persist($post);

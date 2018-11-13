@@ -43,7 +43,7 @@ class UserVoter extends Voter
                 return $this->canDelete($subject, $user);
         }
 
-        throw new \LogicException('This code should not be reached!');
+        throw new \LogicException('Undefined action');
     }
 
     /**
@@ -54,7 +54,7 @@ class UserVoter extends Voter
      */
     private function canEdit(User $subject, User $user): bool
     {
-        return $user->getId() === $subject->getId() || false !== in_array('ROLE_ADMIN', $user->getRoles());
+        return $user->getId() === $subject->getId() || false !== in_array(Roles::ROLE_SUPER_ADMIN, $user->getRoles());
     }
 
     /**
@@ -65,6 +65,6 @@ class UserVoter extends Voter
      */
     private function canDelete(User $subject, User $user): bool
     {
-        return $user->getId() !== $subject->getId() && false !== in_array('ROLE_ADMIN', $user->getRoles());
+        return $user->getId() !== $subject->getId() && false !== in_array(Roles::ROLE_SUPER_ADMIN, $user->getRoles());
     }
 }

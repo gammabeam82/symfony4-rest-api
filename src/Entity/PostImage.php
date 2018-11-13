@@ -107,7 +107,7 @@ class PostImage
      *
      * @return PostImage
      */
-    public function setFile(File $file = null): PostImage
+    public function setFile(File $file = null): self
     {
         $this->file = $file;
 

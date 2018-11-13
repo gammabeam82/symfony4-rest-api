@@ -9,6 +9,7 @@ class ChangePasswordRequest extends RequestObject
 {
     /**
      * @var string
+     *
      * @Assert\NotBlank(message="fos_user.password.blank")
      * @Assert\Length(
      *     min=2,
@@ -28,10 +29,15 @@ class ChangePasswordRequest extends RequestObject
     public $repeatedPassword;
 
     /**
+     * @var \DateTimeInterface
+     *
      * @Assert\DateTime()
      */
     public $updatedAt;
 
+    /**
+     * ChangePasswordRequest constructor.
+     */
     public function __construct()
     {
         $this->updatedAt = new \DateTime('now');

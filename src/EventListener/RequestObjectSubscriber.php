@@ -104,12 +104,13 @@ class RequestObjectSubscriber implements EventSubscriberInterface
                     $attachment->setFile($uploadedFile);
                     $collection->add($attachment);
                 }
-                $this->accessor->setValue($dto, $config['fileProperty'], $collection);
+                $attachment = $collection;
             } else {
                 $attachment = $reflectionClass->newInstance();
                 $attachment->setFile($files->get($file));
-                $this->accessor->setValue($dto, $config['fileProperty'], $attachment);
             }
+
+            $this->accessor->setValue($dto, $config['fileProperty'], $attachment);
         }
     }
 

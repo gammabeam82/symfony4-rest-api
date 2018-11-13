@@ -10,6 +10,7 @@ class ChangeEmailRequest extends RequestObject
 {
     /**
      * @var string
+     *
      * @Assert\NotBlank(message="fos_user.email.blank")
      * @Assert\Length(
      *     min=2,
@@ -27,10 +28,15 @@ class ChangeEmailRequest extends RequestObject
     public $email;
 
     /**
+     * @var \DateTimeInterface
+     *
      * @Assert\DateTime()
      */
     public $updatedAt;
 
+    /**
+     * ChangeEmailRequest constructor.
+     */
     public function __construct()
     {
         $this->updatedAt = new \DateTime('now');

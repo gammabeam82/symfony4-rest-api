@@ -4,6 +4,7 @@ namespace App\Request\User;
 
 use App\Request\RequestObject;
 use App\Validator\Constraints as AppAssert;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Validator\Constraints as Assert;
 
 class CreateUserRequest extends RequestObject
@@ -18,6 +19,7 @@ class CreateUserRequest extends RequestObject
 
     /**
      * @var string
+     *
      * @Assert\NotBlank(message="fos_user.username.blank")
      * @Assert\Length(
      *     min=2,
@@ -35,6 +37,7 @@ class CreateUserRequest extends RequestObject
 
     /**
      * @var string
+     *
      * @Assert\NotBlank(message="fos_user.email.blank")
      * @Assert\Length(
      *     min=2,
@@ -53,6 +56,7 @@ class CreateUserRequest extends RequestObject
 
     /**
      * @var string
+     *
      * @Assert\NotBlank(message="fos_user.password.blank")
      * @Assert\Length(
      *     min=2,
@@ -63,6 +67,8 @@ class CreateUserRequest extends RequestObject
     public $password;
 
     /**
+     * @var UploadedFile
+     *
      * @Assert\File(
      *     maxSize="1024k",
      *     mimeTypes={"image/jpeg", "image/png"}
@@ -71,15 +77,22 @@ class CreateUserRequest extends RequestObject
     public $image;
 
     /**
+     * @var \DateTimeInterface
+     *
      * @Assert\DateTime()
      */
     public $createdAt;
 
     /**
+     * @var \DateTimeInterface
+     *
      * @Assert\DateTime()
      */
     public $updatedAt;
 
+    /**
+     * CreateUserRequest constructor.
+     */
     public function __construct()
     {
         $this->createdAt = new \DateTime('now');

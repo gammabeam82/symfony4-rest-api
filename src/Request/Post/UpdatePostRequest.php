@@ -24,43 +24,60 @@ class UpdatePostRequest extends RequestObject
     ];
 
     /**
+     * @var string
+     *
      * @Assert\NotBlank()
      * @Assert\Length(max=255)
      */
     public $title;
 
     /**
+     * @var string
+     *
      * @Assert\NotBlank()
      * @Assert\Length(min=3)
      */
     public $summary;
 
     /**
+     * @var string
+     *
      * @Assert\NotBlank()
      * @Assert\Length(min=3)
      */
     public $article;
 
     /**
+     * @var Category
+     *
      * @Assert\Valid()
      */
     public $category;
 
     /**
+     * @var Tag[]
+     *
      * @Assert\Valid()
      * */
     public $tags;
 
     /**
+     * @var \DateTimeInterface
+     *
      * @Assert\DateTime()
      */
     public $updatedAt;
 
     /**
+     * @var PostImage[]
+     *
      * @Assert\Valid()
      */
     public $images;
 
+    /**
+     * UpdatePostRequest constructor.
+     */
     public function __construct()
     {
         $this->updatedAt = new \DateTime('now');

@@ -3,6 +3,7 @@
 namespace App\DataFixtures;
 
 use App\Entity\User;
+use App\Security\Roles;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\Persistence\ObjectManager;
 use FOS\UserBundle\Model\UserManagerInterface;
@@ -40,7 +41,7 @@ class UserFixtures extends Fixture
             ->setEnabled(true)
             ->setUpdatedAt(new \DateTime('now'))
             ->setCreatedAt(new \DateTime('now'))
-            ->addRole('ROLE_ADMIN');
+            ->addRole(Roles::ROLE_SUPER_ADMIN);
 
         $this->userManager->updateUser($user);
 
