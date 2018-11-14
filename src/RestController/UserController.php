@@ -98,6 +98,42 @@ class UserController extends FOSRestController
     }
 
     /**
+     * @IsGranted(Actions::PROMOTE, subject="user")
+     * @Rest\Patch("/{id}/promote", name="promote_user", requirements={"id"="\d+"})
+     * @Rest\View(serializerGroups={"user_details"})
+     * @ParamConverter("user", class="App:User")
+     *
+     * @param User $user
+     * @param UserService $service
+     *
+     * @return View
+     */
+    public function addAdminAction(User $user, UserService $service): View
+    {
+        $service->addAdmin($user);
+
+        return View::create($user, Response::HTTP_OK);
+    }
+
+    /**
+     * @IsGranted(Actions::DEMOTE, subject="user")
+     * @Rest\Patch("/{id}/demote", name="demote_user", requirements={"id"="\d+"})
+     * @Rest\View(serializerGroups={"user_details"})
+     * @ParamConverter("user", class="App:User")
+     *
+     * @param User $user
+     * @param UserService $service
+     *
+     * @return View
+     */
+    public function removeAdminAction(User $user, UserService $service): View
+    {
+        $service->removeAdmin($user);
+
+        return View::create($user, Response::HTTP_OK);
+    }
+
+    /**
      * @IsGranted(Actions::EDIT, subject="user")
      * @Rest\Delete("/{id}/delete_avatar", name="delete_avatar", requirements={"id"="\d+"})
      * @Rest\View(serializerGroups={"user_details"})

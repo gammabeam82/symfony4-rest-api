@@ -14,6 +14,11 @@ class UserControllerTest extends WebTestCase
         'password' => 'qwerty'
     ];
 
+    private const ADMIN = [
+        'username' => 'testuser',
+        'password' => 'p@ssword'
+    ];
+
     /**
      * @var Client
      */
@@ -129,15 +134,28 @@ class UserControllerTest extends WebTestCase
         $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
     }
 
+    public function testPromoteUser(): void
+    {
+        $this->client->request('PATCH', '/api/v1/users/2/promote', [], [], [
+            'HTTP_Authorization' => $this->getToken(self::ADMIN)
+        ]);
+
+        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
+    }
+
+    public function testDemoteUser(): void
+    {
+        $this->client->request('PATCH', '/api/v1/users/2/demote', [], [], [
+            'HTTP_Authorization' => $this->getToken(self::ADMIN)
+        ]);
+
+        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
+    }
+
     public function testDeleteUser(): void
     {
-        $credentials = [
-            'username' => 'testuser',
-            'password' => 'p@ssword'
-        ];
-
         $this->client->request('DELETE', '/api/v1/users/2', [], [], [
-            'HTTP_Authorization' => $this->getToken($credentials)
+            'HTTP_Authorization' => $this->getToken(self::ADMIN)
         ]);
 
         $this->assertEquals(200, $this->client->getResponse()->getStatusCode());

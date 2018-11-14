@@ -6,6 +6,7 @@ use App\Entity\Category;
 use App\Entity\PostImage;
 use App\Entity\Tag;
 use App\Request\RequestObject;
+use Doctrine\Common\Collections\Collection;
 use Symfony\Component\Validator\Constraints as Assert;
 
 class CreatePostRequest extends RequestObject
@@ -69,14 +70,14 @@ class CreatePostRequest extends RequestObject
     public $category;
 
     /**
-     * @var Tag[]
+     * @var Collection|Tag[]
      *
      * @Assert\Valid()
      * */
     public $tags;
 
     /**
-     * @var PostImage[]
+     * @var Collection|PostImage[]
      *
      * @Assert\Valid()
      */

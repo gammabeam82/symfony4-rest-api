@@ -8,6 +8,8 @@ final class Actions
     public const CREATE = 'create';
     public const EDIT = 'edit';
     public const DELETE = 'delete';
+    public const PROMOTE = 'promote';
+    public const DEMOTE = 'demote';
 
     /**
      * @return array
@@ -18,7 +20,9 @@ final class Actions
             self::VIEW,
             self::CREATE,
             self::EDIT,
-            self::DELETE
+            self::DELETE,
+            self::PROMOTE,
+            self::DEMOTE
         ];
     }
 }

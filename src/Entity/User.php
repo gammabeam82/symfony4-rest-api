@@ -6,11 +6,11 @@ use App\Request\User\ChangeAvatarRequest;
 use App\Request\User\ChangeEmailRequest;
 use App\Request\User\ChangePasswordRequest;
 use App\Request\User\CreateUserRequest;
+use App\Security\Roles;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use FOS\UserBundle\Model\User as BaseUser;
-use FOS\UserBundle\Model\UserInterface;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
@@ -114,7 +114,7 @@ class User extends BaseUser
             ->setUsername($dto->username)
             ->setEmail($dto->email)
             ->setPlainPassword($dto->password)
-            ->addRole(UserInterface::ROLE_DEFAULT)
+            ->addRole(Roles::ROLE_USER)
             ->setImage($dto->image)
             ->setCreatedAt($dto->createdAt)
             ->setUpdatedAt($dto->updatedAt)
@@ -151,6 +151,16 @@ class User extends BaseUser
         $this
             ->setUpdatedAt($dto->updatedAt)
             ->setImage($dto->image);
+    }
+
+    public function promote(): void
+    {
+        $this->addRole(Roles::ROLE_ADMIN);
+    }
+
+    public function demote(): void
+    {
+        $this->removeRole(Roles::ROLE_ADMIN);
     }
 
     /**

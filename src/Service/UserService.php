@@ -106,4 +106,24 @@ class UserService
     {
         $this->manager->deleteUser($user);
     }
+
+    /**
+     * @param User $user
+     */
+    public function addAdmin(User $user): void
+    {
+        $user->promote();
+
+        $this->manager->updateUser($user);
+    }
+
+    /**
+     * @param User $user
+     */
+    public function removeAdmin(User $user): void
+    {
+        $user->demote();
+
+        $this->manager->updateUser($user);
+    }
 }

@@ -14,7 +14,12 @@ class UserVoter extends Voter
     protected function supports($attribute, $subject): bool
     {
 
-        if (false === in_array($attribute, [Actions::EDIT, Actions::DELETE])) {
+        if (false === in_array($attribute, [
+                Actions::EDIT,
+                Actions::DELETE,
+                Actions::PROMOTE,
+                Actions::DEMOTE
+            ])) {
             return false;
         }
 
@@ -41,6 +46,10 @@ class UserVoter extends Voter
                 return $this->canEdit($subject, $user);
             case Actions::DELETE:
                 return $this->canDelete($subject, $user);
+            case Actions::PROMOTE:
+                return $this->canChangeRole($subject, $user);
+            case Actions::DEMOTE:
+                return $this->canChangeRole($subject, $user);
         }
 
         throw new \LogicException('Undefined action');
@@ -64,6 +73,17 @@ class UserVoter extends Voter
      * @return bool
      */
     private function canDelete(User $subject, User $user): bool
+    {
+        return $user->getId() !== $subject->getId() && false !== in_array(Roles::ROLE_SUPER_ADMIN, $user->getRoles());
+    }
+
+    /**
+     * @param User $subject
+     * @param User $user
+     *
+     * @return bool
+     */
+    public function canChangeRole(User $subject, User $user): bool
     {
         return $user->getId() !== $subject->getId() && false !== in_array(Roles::ROLE_SUPER_ADMIN, $user->getRoles());
     }

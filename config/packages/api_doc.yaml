@@ -167,6 +167,64 @@ nelmio_api_doc:
                         '403':
                             description: Forbidden
 
+            /api/v1/users/{id}/promote:
+                patch:
+                    security:
+                        name: Bearer
+                    summary: Promote user
+                    produces:
+                        - application/json
+                    tags:
+                        - users
+                    parameters:
+                        - name: id
+                          description: User ID
+                          in: path
+                          required: true
+                          type: integer
+                        - name: Authorization
+                          description: JWT token
+                          in: header
+                          required: true
+                          type: string
+                          default: Bearer token
+                    responses:
+                        '200':
+                            description: Ok
+                        '401':
+                            description: Expired JWT Token | JWT Token not found | Invalid JWT Token
+                        '403':
+                            description: Forbidden
+
+            /api/v1/users/{id}/demote:
+                patch:
+                    security:
+                        name: Bearer
+                    summary: Demote user
+                    produces:
+                        - application/json
+                    tags:
+                        - users
+                    parameters:
+                        - name: id
+                          description: User ID
+                          in: path
+                          required: true
+                          type: integer
+                        - name: Authorization
+                          description: JWT token
+                          in: header
+                          required: true
+                          type: string
+                          default: Bearer token
+                    responses:
+                        '200':
+                            description: Ok
+                        '401':
+                            description: Expired JWT Token | JWT Token not found | Invalid JWT Token
+                        '403':
+                            description: Forbidden
+
             /api/v1/users/{id}/change_password:
                 patch:
                     security:
