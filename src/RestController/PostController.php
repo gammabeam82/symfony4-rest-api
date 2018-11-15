@@ -4,6 +4,7 @@ namespace App\RestController;
 
 use App\Entity\Comment;
 use App\Entity\Post;
+use App\Entity\PostImage;
 use App\Repository\PostRepository;
 use App\Request\Comment\CreateCommentRequest;
 use App\Request\Comment\UpdateCommentRequest;
@@ -59,6 +60,26 @@ class PostController extends FOSRestController
     public function updatePostAction(UpdatePostRequest $postRequest, Post $post, PostService $service): View
     {
         $service->update($postRequest, $post);
+
+        return View::create($post, Response::HTTP_OK);
+    }
+
+    /**
+     * @IsGranted(Actions::EDIT, subject="post")
+     * @Rest\Patch("/{id}/remove_image/{image_id}", name="remove_image")
+     * @Rest\View(serializerGroups={"post_details", "category_list", "tag_list", "user_list"})
+     * @ParamConverter("post", class="App:Post")
+     * @ParamConverter("image", class="App:PostImage", options={"id"="image_id"})
+     *
+     * @param Post $post
+     * @param PostImage $image
+     * @param PostService $service
+     *
+     * @return View
+     */
+    public function removeImageAction(Post $post, PostImage $image, PostService $service): View
+    {
+        $service->removeImage($post, $image);
 
         return View::create($post, Response::HTTP_OK);
     }

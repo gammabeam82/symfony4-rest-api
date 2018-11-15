@@ -3,6 +3,7 @@
 namespace App\Service;
 
 use App\Entity\Post;
+use App\Entity\PostImage;
 use App\Entity\User;
 use App\Request\Post\CreatePostRequest;
 use App\Request\Post\UpdatePostRequest;
@@ -25,6 +26,7 @@ class PostService
      * PostService constructor.
      *
      * @param EntityManagerInterface $em
+     * @param TokenStorageInterface $tokenStorage
      */
     public function __construct(EntityManagerInterface $em, TokenStorageInterface $tokenStorage)
     {
@@ -69,6 +71,18 @@ class PostService
     public function delete(Post $post): void
     {
         $this->em->remove($post);
+        $this->em->flush();
+    }
+
+    /**
+     * @param Post $post
+     * @param PostImage $image
+     */
+    public function removeImage(Post $post, PostImage $image): void
+    {
+        $post->removeImage($image);
+
+        $this->em->persist($post);
         $this->em->flush();
     }
 }
