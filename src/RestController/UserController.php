@@ -162,7 +162,7 @@ class UserController extends FOSRestController
      *
      * @return View
      */
-    public function deleteAction(User $user, UserService $service): View
+    public function deleteUserAction(User $user, UserService $service): View
     {
         $service->deleteUser($user);
 

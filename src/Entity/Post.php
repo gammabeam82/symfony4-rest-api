@@ -124,12 +124,21 @@ class Post
     private $images;
 
     /**
+     * @var Collection|Comment[]
+     *
+     * @Groups({"post_comments"})
+     * @ORM\OneToMany(targetEntity="App\Entity\Comment", mappedBy="post", orphanRemoval=true)
+     */
+    private $comments;
+
+    /**
      * Post constructor.
      */
     public function __construct()
     {
         $this->tags = new ArrayCollection();
         $this->images = new ArrayCollection();
+        $this->comments = new ArrayCollection();
     }
 
     /**
@@ -428,6 +437,46 @@ class Post
 
         foreach ($this->images as $image) {
             $image->setPost($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Comment[]
+     */
+    public function getComments(): Collection
+    {
+        return $this->comments;
+    }
+
+    /**
+     * @param Comment $comment
+     *
+     * @return Post
+     */
+    public function addComment(Comment $comment): self
+    {
+        if (false === $this->comments->contains($comment)) {
+            $this->comments[] = $comment;
+            $comment->setPost($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param Comment $comment
+     *
+     * @return Post
+     */
+    public function removeComment(Comment $comment): self
+    {
+        if (false !== $this->comments->contains($comment)) {
+            $this->comments->removeElement($comment);
+            if ($comment->getPost() === $this) {
+                $comment->setPost(null);
+            }
         }
 
         return $this;

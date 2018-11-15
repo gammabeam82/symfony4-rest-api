@@ -7,6 +7,7 @@ use App\Entity\User;
 use App\Request\Post\CreatePostRequest;
 use App\Request\Post\UpdatePostRequest;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 class PostService
 {
@@ -16,23 +17,31 @@ class PostService
     private $em;
 
     /**
+     * @var TokenStorageInterface
+     */
+    private $tokenStorage;
+
+    /**
      * PostService constructor.
      *
      * @param EntityManagerInterface $em
      */
-    public function __construct(EntityManagerInterface $em)
+    public function __construct(EntityManagerInterface $em, TokenStorageInterface $tokenStorage)
     {
         $this->em = $em;
+        $this->tokenStorage = $tokenStorage;
     }
 
     /**
      * @param CreatePostRequest $dto
-     * @param User $user
      *
      * @return Post
      */
-    public function create(CreatePostRequest $dto, User $user): Post
+    public function create(CreatePostRequest $dto): Post
     {
+        /** @var User $user */
+        $user = $this->tokenStorage->getToken()->getUser();
+
         $post = Post::createFromDTO($dto);
         $post->setUser($user);
 

@@ -93,12 +93,20 @@ class User extends BaseUser
     private $updatedAt;
 
     /**
+     * @var Collection|Comment[]
+     *
+     * @ORM\OneToMany(targetEntity="App\Entity\Comment", mappedBy="user", orphanRemoval=true)
+     */
+    private $comments;
+
+    /**
      * User constructor.
      */
     public function __construct()
     {
         parent::__construct();
         $this->posts = new ArrayCollection();
+        $this->comments = new ArrayCollection();
     }
 
     /**
@@ -279,6 +287,46 @@ class User extends BaseUser
     public function setUpdatedAt(\DateTimeInterface $updatedAt): self
     {
         $this->updatedAt = $updatedAt;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Comment[]
+     */
+    public function getComments(): Collection
+    {
+        return $this->comments;
+    }
+
+    /**
+     * @param Comment $comment
+     *
+     * @return User
+     */
+    public function addComment(Comment $comment): self
+    {
+        if (false === $this->comments->contains($comment)) {
+            $this->comments[] = $comment;
+            $comment->setUser($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param Comment $comment
+     *
+     * @return User
+     */
+    public function removeComment(Comment $comment): self
+    {
+        if (false !== $this->comments->contains($comment)) {
+            $this->comments->removeElement($comment);
+            if ($comment->getUser() === $this) {
+                $comment->setUser(null);
+            }
+        }
 
         return $this;
     }
