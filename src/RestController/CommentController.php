@@ -23,7 +23,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class CommentController extends FOSRestController
 {
     /**
-     * @Rest\Post("/{id}/comments", name="create_post_comment")
+     * @Rest\Post("/{id}/comments/", name="create_post_comment")
      * @Rest\View(serializerGroups={"comment_details", "user_list"})
      * @ParamConverter("post", class="App:Post")
      *
@@ -92,7 +92,7 @@ class CommentController extends FOSRestController
     }
 
     /**
-     * @Rest\Get("/{id}/comments", name="get_post_comments")
+     * @Rest\Get("/{id}/comments/", name="get_post_comments")
      * @Rest\View(serializerGroups={"user_list"})
      * @ParamConverter("post", class="App:Post")
      * @Rest\QueryParam(name="details", default=false)
