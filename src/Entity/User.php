@@ -100,11 +100,19 @@ class User extends BaseUser
     private $comments;
 
     /**
+     * @var bool
+     *
+     * @ORM\Column(type="boolean")
+     */
+    private $banned;
+
+    /**
      * User constructor.
      */
     public function __construct()
     {
         parent::__construct();
+        $this->banned = false;
         $this->posts = new ArrayCollection();
         $this->comments = new ArrayCollection();
     }
@@ -327,6 +335,26 @@ class User extends BaseUser
                 $comment->setUser(null);
             }
         }
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isBanned(): bool
+    {
+        return $this->banned;
+    }
+
+    /**
+     * @param bool $banned
+     *
+     * @return User
+     */
+    public function setBanned(bool $banned): self
+    {
+        $this->banned = $banned;
 
         return $this;
     }

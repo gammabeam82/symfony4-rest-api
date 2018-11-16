@@ -10,6 +10,8 @@ use Faker\Generator as Faker;
 
 class PostFixtures extends Fixture implements DependentFixtureInterface
 {
+    public const POST_REFERENCE = 'post';
+
     /**
      * @var Faker
      */
@@ -61,6 +63,8 @@ class PostFixtures extends Fixture implements DependentFixtureInterface
 
             $manager->persist($post);
         }
+
+        $this->addReference(self::POST_REFERENCE, $post);
 
         $manager->flush();
     }
