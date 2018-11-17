@@ -16,6 +16,7 @@ class CommentVoter extends Voter
     {
 
         if (false === in_array($attribute, [
+                Actions::CREATE,
                 Actions::EDIT,
                 Actions::DELETE
             ])) {
@@ -40,7 +41,13 @@ class CommentVoter extends Voter
             return false;
         }
 
+        if (false !== in_array(Roles::ROLE_SUPER_ADMIN, $user->getRoles())) {
+            return true;
+        }
+
         switch ($attribute) {
+            case Actions::CREATE:
+                return $this->canCreate($user);
             case Actions::EDIT:
                 return $this->canEdit($subject, $user);
             case Actions::DELETE:
@@ -51,6 +58,16 @@ class CommentVoter extends Voter
     }
 
     /**
+     * @param User $user
+     *
+     * @return bool
+     */
+    private function canCreate(User $user): bool
+    {
+        return false === $user->isBanned();
+    }
+
+    /**
      * @param Comment $subject
      * @param User $user
      *
@@ -58,7 +75,7 @@ class CommentVoter extends Voter
      */
     private function canEdit(Comment $subject, User $user): bool
     {
-        return $user->getId() === $subject->getUser()->getId() || false !== in_array(Roles::ROLE_SUPER_ADMIN, $user->getRoles());
+        return $user->getId() === $subject->getUser()->getId() && false === $user->isBanned();
     }
 
     /**
@@ -69,6 +86,6 @@ class CommentVoter extends Voter
      */
     private function canDelete(Comment $subject, User $user): bool
     {
-        return $user->getId() === $subject->getUser()->getId() || false !== in_array(Roles::ROLE_SUPER_ADMIN, $user->getRoles());
+        return $user->getId() === $subject->getUser()->getId() && false === $user->isBanned();
     }
 }

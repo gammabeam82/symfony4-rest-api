@@ -10,6 +10,7 @@ final class Actions
     public const DELETE = 'delete';
     public const PROMOTE = 'promote';
     public const DEMOTE = 'demote';
+    public const BAN = 'ban';
 
     /**
      * @return array
@@ -22,7 +23,8 @@ final class Actions
             self::EDIT,
             self::DELETE,
             self::PROMOTE,
-            self::DEMOTE
+            self::DEMOTE,
+            self::BAN
         ];
     }
 }

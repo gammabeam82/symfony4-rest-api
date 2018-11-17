@@ -35,6 +35,8 @@ class CommentController extends FOSRestController
      */
     public function createPostCommentAction(CreateCommentRequest $commentRequest, Post $post, CommentService $service): View
     {
+        $this->denyAccessUnlessGranted(Actions::CREATE, new Comment());
+
         $comment = $service->create($commentRequest, $post);
 
         return View::create($comment, Response::HTTP_OK);
