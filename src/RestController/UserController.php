@@ -116,7 +116,7 @@ class UserController extends FOSRestController
     }
 
     /**
-     * @IsGranted(Actions::DEMOTE, subject="user")
+     * @IsGranted(Actions::PROMOTE, subject="user")
      * @Rest\Patch("/{id}/demote", name="demote_user", requirements={"id"="\d+"})
      * @Rest\View(serializerGroups={"user_details"})
      * @ParamConverter("user", class="App:User")
@@ -129,6 +129,42 @@ class UserController extends FOSRestController
     public function removeAdminAction(User $user, UserService $service): View
     {
         $service->removeAdmin($user);
+
+        return View::create($user, Response::HTTP_OK);
+    }
+
+    /**
+     * @IsGranted(Actions::BAN, subject="user")
+     * @Rest\Patch("/{id}/block", name="block_user", requirements={"id"="\d+"})
+     * @Rest\View(serializerGroups={"user_details"})
+     * @ParamConverter("user", class="App:User")
+     *
+     * @param User $user
+     * @param UserService $service
+     *
+     * @return View
+     */
+    public function blockUserAction(User $user, UserService $service): View
+    {
+        $service->blockUser($user);
+
+        return View::create($user, Response::HTTP_OK);
+    }
+
+    /**
+     * @IsGranted(Actions::BAN, subject="user")
+     * @Rest\Patch("/{id}/unblock", name="unblock_user", requirements={"id"="\d+"})
+     * @Rest\View(serializerGroups={"user_details"})
+     * @ParamConverter("user", class="App:User")
+     *
+     * @param User $user
+     * @param UserService $service
+     *
+     * @return View
+     */
+    public function unblockUserAction(User $user, UserService $service): View
+    {
+        $service->unblockUser($user);
 
         return View::create($user, Response::HTTP_OK);
     }

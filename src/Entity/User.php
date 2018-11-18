@@ -358,4 +358,14 @@ class User extends BaseUser
 
         return $this;
     }
+
+    public function block(): void
+    {
+        $this->banned = true;
+    }
+
+    public function unblock(): void
+    {
+        $this->banned = false;
+    }
 }

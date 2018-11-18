@@ -126,4 +126,24 @@ class UserService
 
         $this->manager->updateUser($user);
     }
+
+    /**
+     * @param User $user
+     */
+    public function blockUser(User $user): void
+    {
+        $user->block();
+
+        $this->manager->updateUser($user);
+    }
+
+    /**
+     * @param User $user
+     */
+    public function unblockUser(User $user): void
+    {
+        $user->unblock();
+
+        $this->manager->updateUser($user);
+    }
 }

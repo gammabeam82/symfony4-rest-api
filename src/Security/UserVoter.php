@@ -5,9 +5,25 @@ namespace App\Security;
 use App\Entity\User;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
+use Symfony\Component\Security\Core\Security;
 
 class UserVoter extends Voter
 {
+    /**
+     * @var Security
+     */
+    private $security;
+
+    /**
+     * UserVoter constructor.
+     *
+     * @param Security $security
+     */
+    public function __construct(Security $security)
+    {
+        $this->security = $security;
+    }
+
     /**
      * @inheritdoc
      */
@@ -18,7 +34,7 @@ class UserVoter extends Voter
                 Actions::EDIT,
                 Actions::DELETE,
                 Actions::PROMOTE,
-                Actions::DEMOTE
+                Actions::BAN
             ])) {
             return false;
         }
@@ -48,8 +64,8 @@ class UserVoter extends Voter
                 return $this->canDelete($subject, $user);
             case Actions::PROMOTE:
                 return $this->canChangeRole($subject, $user);
-            case Actions::DEMOTE:
-                return $this->canChangeRole($subject, $user);
+            case Actions::BAN:
+                return $this->canBan($subject, $user);
         }
 
         throw new \LogicException('Undefined action');
@@ -63,7 +79,7 @@ class UserVoter extends Voter
      */
     private function canEdit(User $subject, User $user): bool
     {
-        return $user->getId() === $subject->getId() || false !== in_array(Roles::ROLE_SUPER_ADMIN, $user->getRoles());
+        return $user->getId() === $subject->getId() || false !== $this->security->isGranted(Roles::ROLE_SUPER_ADMIN);
     }
 
     /**
@@ -74,7 +90,7 @@ class UserVoter extends Voter
      */
     private function canDelete(User $subject, User $user): bool
     {
-        return $user->getId() !== $subject->getId() && false !== in_array(Roles::ROLE_SUPER_ADMIN, $user->getRoles());
+        return $user->getId() !== $subject->getId() && false !== $this->security->isGranted(Roles::ROLE_SUPER_ADMIN);
     }
 
     /**
@@ -83,8 +99,19 @@ class UserVoter extends Voter
      *
      * @return bool
      */
-    public function canChangeRole(User $subject, User $user): bool
+    private function canChangeRole(User $subject, User $user): bool
     {
-        return $user->getId() !== $subject->getId() && false !== in_array(Roles::ROLE_SUPER_ADMIN, $user->getRoles());
+        return $user->getId() !== $subject->getId() && false !== $this->security->isGranted(Roles::ROLE_SUPER_ADMIN);
+    }
+
+    /**
+     * @param User $subject
+     * @param User $user
+     *
+     * @return bool
+     */
+    private function canBan(User $subject, User $user): bool
+    {
+        return $user->getId() !== $subject->getId() && false !== $this->security->isGranted(Roles::ROLE_ADMIN);
     }
 }

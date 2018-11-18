@@ -9,22 +9,5 @@ final class Actions
     public const EDIT = 'edit';
     public const DELETE = 'delete';
     public const PROMOTE = 'promote';
-    public const DEMOTE = 'demote';
     public const BAN = 'ban';
-
-    /**
-     * @return array
-     */
-    public static function getAllActions(): array
-    {
-        return [
-            self::VIEW,
-            self::CREATE,
-            self::EDIT,
-            self::DELETE,
-            self::PROMOTE,
-            self::DEMOTE,
-            self::BAN
-        ];
-    }
 }

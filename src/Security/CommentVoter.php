@@ -14,7 +14,6 @@ class CommentVoter extends Voter
      */
     protected function supports($attribute, $subject): bool
     {
-
         if (false === in_array($attribute, [
                 Actions::CREATE,
                 Actions::EDIT,
@@ -45,6 +44,10 @@ class CommentVoter extends Voter
             return true;
         }
 
+        if (false !== $user->isBanned()) {
+            return false;
+        }
+
         switch ($attribute) {
             case Actions::CREATE:
                 return $this->canCreate($user);
@@ -64,7 +67,7 @@ class CommentVoter extends Voter
      */
     private function canCreate(User $user): bool
     {
-        return false === $user->isBanned();
+        return true;
     }
 
     /**
@@ -75,7 +78,7 @@ class CommentVoter extends Voter
      */
     private function canEdit(Comment $subject, User $user): bool
     {
-        return $user->getId() === $subject->getUser()->getId() && false === $user->isBanned();
+        return $user->getId() === $subject->getUser()->getId();
     }
 
     /**
@@ -86,6 +89,6 @@ class CommentVoter extends Voter
      */
     private function canDelete(Comment $subject, User $user): bool
     {
-        return $user->getId() === $subject->getUser()->getId() && false === $user->isBanned();
+        return $user->getId() === $subject->getUser()->getId() || false !== in_array(Roles::ROLE_ADMIN, $user->getRoles());
     }
 }

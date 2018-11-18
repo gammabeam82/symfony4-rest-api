@@ -152,6 +152,24 @@ class UserControllerTest extends WebTestCase
         $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
     }
 
+    public function testBanUser(): void
+    {
+        $this->client->request('PATCH', '/api/v1/users/2/block', [], [], [
+            'HTTP_Authorization' => $this->getToken(self::ADMIN)
+        ]);
+
+        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
+    }
+
+    public function testUnbanUser(): void
+    {
+        $this->client->request('PATCH', '/api/v1/users/2/unblock', [], [], [
+            'HTTP_Authorization' => $this->getToken(self::ADMIN)
+        ]);
+
+        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
+    }
+
     public function testDeleteUser(): void
     {
         $this->client->request('DELETE', '/api/v1/users/2', [], [], [

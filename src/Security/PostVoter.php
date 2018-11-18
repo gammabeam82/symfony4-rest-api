@@ -14,8 +14,11 @@ class PostVoter extends Voter
      */
     protected function supports($attribute, $subject): bool
     {
-
-        if (false === in_array($attribute, Actions::getAllActions())) {
+        if (false === in_array($attribute, [
+                Actions::CREATE,
+                Actions::EDIT,
+                Actions::DELETE
+            ])) {
             return false;
         }
 
@@ -35,6 +38,10 @@ class PostVoter extends Voter
 
         if (!$user instanceof User) {
             return false;
+        }
+
+        if (false !== in_array(Roles::ROLE_SUPER_ADMIN, $user->getRoles())) {
+            return true;
         }
 
         switch ($attribute) {
@@ -67,7 +74,7 @@ class PostVoter extends Voter
      */
     private function canEdit(Post $subject, User $user): bool
     {
-        return $user->getId() === $subject->getUser()->getId() || false !== in_array(Roles::ROLE_SUPER_ADMIN, $user->getRoles());
+        return $user->getId() === $subject->getUser()->getId();
     }
 
     /**
@@ -78,6 +85,6 @@ class PostVoter extends Voter
      */
     private function canDelete(Post $subject, User $user): bool
     {
-        return $user->getId() === $subject->getUser()->getId() || false !== in_array(Roles::ROLE_SUPER_ADMIN, $user->getRoles());
+        return $user->getId() === $subject->getUser()->getId();
     }
 }
