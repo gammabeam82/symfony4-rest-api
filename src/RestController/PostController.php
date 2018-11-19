@@ -62,7 +62,7 @@ class PostController extends FOSRestController
 
     /**
      * @IsGranted(Actions::EDIT, subject="post")
-     * @Rest\Patch("/{id}/remove_image/{image_id}", name="remove_image")
+     * @Rest\Delete("/{id}/remove_image/{image_id}", name="remove_image")
      * @Rest\View(serializerGroups={"post_details", "category_list", "tag_list", "user_list"})
      * @ParamConverter("post", class="App:Post")
      * @ParamConverter("image", class="App:PostImage", options={"id"="image_id"})

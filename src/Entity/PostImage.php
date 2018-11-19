@@ -5,6 +5,7 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 /**
@@ -34,6 +35,10 @@ class PostImage
     /**
      * @var File
      *
+     * @Assert\File(
+     *     maxSize="4096k",
+     *     mimeTypes={"image/jpeg", "image/png"}
+     * )
      * @Vich\UploadableField(mapping="posts", fileNameProperty="filename")
      */
     private $file;

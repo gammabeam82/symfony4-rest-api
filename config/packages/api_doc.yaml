@@ -31,6 +31,8 @@ nelmio_api_doc:
                         '400':
                             description: Bad request
 
+    ####################### users ##################
+
             /api/v1/users/:
                 get:
                     security:
@@ -51,12 +53,16 @@ nelmio_api_doc:
                         '200':
                             description: Ok
                             schema:
-                                type: object
-                                properties:
-                                    id:
-                                        type: integer
-                                    username:
-                                        type: string
+                                type: array
+                                items:
+                                    type: object
+                                    properties:
+                                        id:
+                                            type: integer
+                                        username:
+                                            type: string
+                                        avatar:
+                                            type: string
                         '401':
                             description: Expired JWT Token | JWT Token not found | Invalid JWT Token
                 post:
@@ -95,8 +101,6 @@ nelmio_api_doc:
                             description: Created
                         '400':
                             description: Bad request
-
-                
 
             /api/v1/users/{id}:
                 get:
@@ -137,8 +141,25 @@ nelmio_api_doc:
                                         type: array
                                         items:
                                             type: string
+                                    createdAt:
+                                        type: string
+                                        format: date-time
+                                    updatedAt:
+                                        type: string
+                                        format: date-time
+                                    posts:
+                                        type: array
+                                        items:
+                                            type: object
+                                            properties:
+                                                id:
+                                                    type: integer
+                                                title:
+                                                    type: string
                         '401':
                             description: Expired JWT Token | JWT Token not found | Invalid JWT Token
+                        '404':
+                            description: Not found
                 delete:
                     security:
                         name: Bearer
@@ -166,6 +187,8 @@ nelmio_api_doc:
                             description: Expired JWT Token | JWT Token not found | Invalid JWT Token
                         '403':
                             description: Forbidden
+                        '404':
+                            description: Not found
 
             /api/v1/users/{id}/promote:
                 patch:
@@ -195,6 +218,8 @@ nelmio_api_doc:
                             description: Expired JWT Token | JWT Token not found | Invalid JWT Token
                         '403':
                             description: Forbidden
+                        '404':
+                            description: Not found
 
             /api/v1/users/{id}/demote:
                 patch:
@@ -224,6 +249,70 @@ nelmio_api_doc:
                             description: Expired JWT Token | JWT Token not found | Invalid JWT Token
                         '403':
                             description: Forbidden
+                        '404':
+                            description: Not found
+
+            /api/v1/users/{id}/block:
+                patch:
+                    security:
+                        name: Bearer
+                    summary: Block user
+                    produces:
+                        - application/json
+                    tags:
+                        - users
+                    parameters:
+                        - name: id
+                          description: User ID
+                          in: path
+                          required: true
+                          type: integer
+                        - name: Authorization
+                          description: JWT token
+                          in: header
+                          required: true
+                          type: string
+                          default: Bearer token
+                    responses:
+                        '200':
+                            description: Ok
+                        '401':
+                            description: Expired JWT Token | JWT Token not found | Invalid JWT Token
+                        '403':
+                            description: Forbidden
+                        '404':
+                            description: Not found
+
+            /api/v1/users/{id}/unblock:
+                patch:
+                    security:
+                        name: Bearer
+                    summary: Unblock user
+                    produces:
+                        - application/json
+                    tags:
+                        - users
+                    parameters:
+                        - name: id
+                          description: User ID
+                          in: path
+                          required: true
+                          type: integer
+                        - name: Authorization
+                          description: JWT token
+                          in: header
+                          required: true
+                          type: string
+                          default: Bearer token
+                    responses:
+                        '200':
+                            description: Ok
+                        '401':
+                            description: Expired JWT Token | JWT Token not found | Invalid JWT Token
+                        '403':
+                            description: Forbidden
+                        '404':
+                            description: Not found
 
             /api/v1/users/{id}/change_password:
                 patch:
@@ -271,6 +360,8 @@ nelmio_api_doc:
                             description: Expired JWT Token | JWT Token not found | Invalid JWT Token
                         '403':
                             description: Forbidden
+                        '404':
+                            description: Not found
 
             /api/v1/users/{id}/change_email:
                 patch:
@@ -315,6 +406,8 @@ nelmio_api_doc:
                             description: Expired JWT Token | JWT Token not found | Invalid JWT Token
                         '403':
                             description: Forbidden
+                        '404':
+                            description: Not found
 
             /api/v1/users/{id}/delete_avatar:
                 delete:
@@ -344,6 +437,8 @@ nelmio_api_doc:
                             description: Expired JWT Token | JWT Token not found | Invalid JWT Token
                         '403':
                             description: Forbidden
+                        '404':
+                            description: Not found
 
             /api/v1/users/{id}/change_avatar:
                 patch:
@@ -379,3 +474,954 @@ nelmio_api_doc:
                             description: Expired JWT Token | JWT Token not found | Invalid JWT Token
                         '403':
                             description: Forbidden
+                        '404':
+                            description: Not found
+
+    ####################### categories ##############################################################
+
+            /api/v1/categories/:
+                post:
+                    security:
+                        name: Bearer
+                    summary: Add category
+                    consumes:
+                        - application/json
+                    produces:
+                        - application/json
+                    tags:
+                        - categories
+                    parameters:
+                        - name: Authorization
+                          description: JWT token
+                          in: header
+                          required: true
+                          type: string
+                          default: Bearer token
+                        - name: category
+                          description:
+                          in: body
+                          required: true
+                          schema:
+                              type: object
+                              required:
+                                  - name
+                              properties:
+                                  name:
+                                      type: string
+                    responses:
+                        '201':
+                            description: Created
+                        '400':
+                            description: Bad request
+                        '401':
+                            description: Expired JWT Token | JWT Token not found | Invalid JWT Token
+                        '403':
+                            description: Forbidden
+                get:
+                    security:
+                        name: Bearer
+                    summary: Return list of categories
+                    produces:
+                        - application/json
+                    tags:
+                        - categories
+                    parameters:
+                        - name: Authorization
+                          description: JWT token
+                          in: header
+                          required: true
+                          type: string
+                          default: Bearer token
+                    responses:
+                        '200':
+                            description: Ok
+                            schema:
+                                type: array
+                                items:
+                                    type: object
+                                    properties:
+                                        id:
+                                            type: integer
+                                        name:
+                                            type: string
+                                        posts:
+                                            type: array
+                                            items:
+                                                type: object
+                                                properties:
+                                                    id:
+                                                        type: integer
+                                                    title:
+                                                        type: string
+                        '401':
+                            description: Expired JWT Token | JWT Token not found | Invalid JWT Token
+
+            /api/v1/categories/{id}:
+                get:
+                    security:
+                        name: Bearer
+                    summary: Return single category
+                    produces:
+                        - application/json
+                    tags:
+                        - categories
+                    parameters:
+                        - name: id
+                          description: Category ID
+                          in: path
+                          required: true
+                          type: integer
+                        - name: Authorization
+                          description: JWT token
+                          in: header
+                          required: true
+                          type: string
+                          default: Bearer token
+                    responses:
+                        '200':
+                            description: Ok
+                            schema:
+                                type: object
+                                properties:
+                                    id:
+                                        type: integer
+                                    name:
+                                        type: string
+                                    posts:
+                                        type: array
+                                        items:
+                                            type: object
+                                            properties:
+                                                id:
+                                                    type: integer
+                                                title:
+                                                    type: string
+                        '401':
+                            description: Expired JWT Token | JWT Token not found | Invalid JWT Token
+                        '404':
+                            description: Not found
+                delete:
+                    security:
+                        name: Bearer
+                    summary: Delete category
+                    produces:
+                        - application/json
+                    tags:
+                        - categories
+                    parameters:
+                        - name: id
+                          description: Category ID
+                          in: path
+                          required: true
+                          type: integer
+                        - name: Authorization
+                          description: JWT token
+                          in: header
+                          required: true
+                          type: string
+                          default: Bearer token
+                    responses:
+                        '200':
+                            description: Ok
+                        '401':
+                            description: Expired JWT Token | JWT Token not found | Invalid JWT Token
+                        '403':
+                            description: Forbidden
+                        '404':
+                            description: Not found
+                patch:
+                    security:
+                        name: Bearer
+                    summary: Update category
+                    produces:
+                        - application/json
+                    consumes:
+                        - application/json
+                    tags:
+                        - categories
+                    parameters:
+                        - name: id
+                          description: Category ID
+                          in: path
+                          required: true
+                          type: integer
+                        - name: Authorization
+                          description: JWT token
+                          in: header
+                          required: true
+                          type: string
+                          default: Bearer token
+                        - name: category
+                          description:
+                          in: body
+                          required: true
+                          schema:
+                              type: object
+                              required:
+                                  - name
+                              properties:
+                                  name:
+                                      type: string
+                    responses:
+                        '200':
+                            description: Ok
+                        '401':
+                            description: Expired JWT Token | JWT Token not found | Invalid JWT Token
+                        '403':
+                            description: Forbidden
+                        '404':
+                            description: Not found
+
+########################### tags ###################################################################
+
+            /api/v1/tags/:
+                post:
+                    security:
+                        name: Bearer
+                    summary: Add tag
+                    consumes:
+                        - application/json
+                    produces:
+                        - application/json
+                    tags:
+                        - tags
+                    parameters:
+                        - name: Authorization
+                          description: JWT token
+                          in: header
+                          required: true
+                          type: string
+                          default: Bearer token
+                        - name: tag
+                          description:
+                          in: body
+                          required: true
+                          schema:
+                              type: object
+                              required:
+                                  - name
+                              properties:
+                                  name:
+                                      type: string
+                    responses:
+                        '201':
+                            description: Created
+                        '400':
+                            description: Bad request
+                        '401':
+                            description: Expired JWT Token | JWT Token not found | Invalid JWT Token
+                        '403':
+                            description: Forbidden
+                get:
+                    security:
+                        name: Bearer
+                    summary: Return list of tags
+                    produces:
+                        - application/json
+                    tags:
+                        - tags
+                    parameters:
+                        - name: Authorization
+                          description: JWT token
+                          in: header
+                          required: true
+                          type: string
+                          default: Bearer token
+                    responses:
+                        '200':
+                            description: Ok
+                            schema:
+                                type: array
+                                items:
+                                    type: object
+                                    properties:
+                                        id:
+                                            type: integer
+                                        name:
+                                            type: string
+                                        posts:
+                                            type: array
+                                            items:
+                                                type: object
+                                                properties:
+                                                    id:
+                                                        type: integer
+                                                    title:
+                                                        type: string
+                        '401':
+                            description: Expired JWT Token | JWT Token not found | Invalid JWT Token
+
+            /api/v1/tags/{id}:
+                get:
+                    security:
+                        name: Bearer
+                    summary: Return single tag
+                    produces:
+                        - application/json
+                    tags:
+                        - tags
+                    parameters:
+                        - name: id
+                          description: Tag ID
+                          in: path
+                          required: true
+                          type: integer
+                        - name: Authorization
+                          description: JWT token
+                          in: header
+                          required: true
+                          type: string
+                          default: Bearer token
+                    responses:
+                        '200':
+                            description: Ok
+                            schema:
+                                type: object
+                                properties:
+                                    id:
+                                        type: integer
+                                    name:
+                                        type: string
+                                    posts:
+                                        type: array
+                                        items:
+                                            type: object
+                                            properties:
+                                                id:
+                                                    type: integer
+                                                title:
+                                                    type: string
+                        '401':
+                            description: Expired JWT Token | JWT Token not found | Invalid JWT Token
+                        '404':
+                            description: Not found
+                delete:
+                    security:
+                        name: Bearer
+                    summary: Delete tag
+                    produces:
+                        - application/json
+                    tags:
+                        - tags
+                    parameters:
+                        - name: id
+                          description: Tag ID
+                          in: path
+                          required: true
+                          type: integer
+                        - name: Authorization
+                          description: JWT token
+                          in: header
+                          required: true
+                          type: string
+                          default: Bearer token
+                    responses:
+                        '200':
+                            description: Ok
+                        '401':
+                            description: Expired JWT Token | JWT Token not found | Invalid JWT Token
+                        '403':
+                            description: Forbidden
+                        '404':
+                            description: Not found
+                patch:
+                    security:
+                        name: Bearer
+                    summary: Update tag
+                    produces:
+                        - application/json
+                    consumes:
+                        - application/json
+                    tags:
+                        - tags
+                    parameters:
+                        - name: id
+                          description: Tag ID
+                          in: path
+                          required: true
+                          type: integer
+                        - name: Authorization
+                          description: JWT token
+                          in: header
+                          required: true
+                          type: string
+                          default: Bearer token
+                        - name: tag
+                          description:
+                          in: body
+                          required: true
+                          schema:
+                              type: object
+                              required:
+                                  - name
+                              properties:
+                                  name:
+                                      type: string
+                    responses:
+                        '200':
+                            description: Ok
+                        '401':
+                            description: Expired JWT Token | JWT Token not found | Invalid JWT Token
+                        '403':
+                            description: Forbidden
+                        '404':
+                            description: Not found
+
+########################### posts ##################################################################
+
+            /api/v1/posts/:
+                get:
+                    security:
+                        name: Bearer
+                    summary: Return list of posts
+                    produces:
+                        - application/json
+                    tags:
+                        - posts
+                    parameters:
+                        - name: Authorization
+                          description: JWT token
+                          in: header
+                          required: true
+                          type: string
+                          default: Bearer token
+                    responses:
+                        '200':
+                            description: Ok
+                            schema:
+                                type: array
+                                items:
+                                    type: object
+                                    properties:
+                                        id:
+                                            type: integer
+                                        title:
+                                            type: string
+                                        createdAt:
+                                            type: string
+                                            format: date-time
+                                        summary:
+                                            type: string
+                                        user:
+                                            type: object
+                                            properties:
+                                                id:
+                                                    type: integer
+                                                username:
+                                                    type: string
+                                        category:
+                                            type: object
+                                            properties:
+                                                id:
+                                                    type: integer
+                                                name:
+                                                    type: string
+                                        tags:
+                                            type: array
+                                            items:
+                                                type: object
+                                                properties:
+                                                    id:
+                                                        type: integer
+                                                    name:
+                                                        type: string
+                                        images:
+                                            type: array
+                                            items:
+                                                type: object
+                                                properties:
+                                                    id:
+                                                        type: integer
+                                                    filename:
+                                                        type: string
+                        '401':
+                            description: Expired JWT Token | JWT Token not found | Invalid JWT Token
+                post:
+                    security:
+                        name: Bearer
+                    summary: Create post
+                    produces:
+                        - application/json
+                    consumes:
+                        - application/json
+                        - application/x-www-form-urlencoded
+                    tags:
+                        - posts
+                    parameters:
+                        - name: Authorization
+                          description: JWT token
+                          in: header
+                          required: true
+                          type: string
+                          default: Bearer token
+                        - name: post
+                          description: Post object
+                          in: body
+                          required: true
+                          schema:
+                              type: object
+                              required:
+                                  - title
+                                  - summary
+                                  - article
+                              properties:
+                                  title:
+                                      type: string
+                                  summary:
+                                      type: string
+                                  article:
+                                      type: string
+                                  category:
+                                      description: Category ID
+                                      type: integer
+                                  tags:
+                                      description: Tag ID
+                                      type: array
+                                      items:
+                                          type: integer
+                        - name: images
+                          in: formData
+                          required: false
+                          type: array
+                          items:
+                              description: Jpg or png image
+                    responses:
+                        '201':
+                            description: Created
+                        '400':
+                            description: Bad request
+                        '401':
+                            description: Expired JWT Token | JWT Token not found | Invalid JWT Token
+                        '403':
+                            description: Forbidden
+
+            /api/v1/posts/{id}:
+                get:
+                    security:
+                        name: Bearer
+                    summary: Return single post
+                    produces:
+                        - application/json
+                    tags:
+                        - posts
+                    parameters:
+                        - name: Authorization
+                          description: JWT token
+                          in: header
+                          required: true
+                          type: string
+                          default: Bearer token
+                    responses:
+                        '200':
+                            description: Ok
+                            schema:
+                                type: object
+                                properties:
+                                    id:
+                                        type: integer
+                                    title:
+                                        type: string
+                                    summary:
+                                        type: string
+                                    article:
+                                        type: string
+                                    createdAt:
+                                        type: string
+                                        format: date-time
+                                    updatedAt:
+                                        type: string
+                                        format: date-time
+                                    user:
+                                        type: object
+                                        properties:
+                                            id:
+                                                type: integer
+                                            username:
+                                                type: string
+                                    category:
+                                        type: object
+                                        properties:
+                                            id:
+                                                type: integer
+                                            name:
+                                                type: string
+                                    tags:
+                                        type: array
+                                        items:
+                                            type: object
+                                            properties:
+                                                id:
+                                                    type: integer
+                                                name:
+                                                    type: string
+                                    images:
+                                        type: array
+                                        items:
+                                            type: object
+                                            properties:
+                                                id:
+                                                    type: integer
+                                                filename:
+                                                    type: string
+                        '401':
+                            description: Expired JWT Token | JWT Token not found | Invalid JWT Token
+                        '404':
+                            description: Not found
+                patch:
+                    security:
+                        name: Bearer
+                    summary: Update post
+                    produces:
+                        - application/json
+                    consumes:
+                        - application/json
+                        - application/x-www-form-urlencoded
+                    tags:
+                        - posts
+                    parameters:
+                        - name: Authorization
+                          description: JWT token
+                          in: header
+                          required: true
+                          type: string
+                          default: Bearer token
+                        - name: id
+                          description: Post ID
+                          in: path
+                          required: true
+                          type: integer
+                        - name: post
+                          description: Post object
+                          in: body
+                          required: true
+                          schema:
+                              type: object
+                              required:
+                                  - title
+                                  - summary
+                                  - article
+                              properties:
+                                  title:
+                                      type: string
+                                  summary:
+                                      type: string
+                                  article:
+                                      type: string
+                                  category:
+                                      description: Category ID
+                                      type: integer
+                                  tags:
+                                      description: Tag ID
+                                      type: array
+                                      items:
+                                          type: integer
+                        - name: images
+                          in: formData
+                          required: false
+                          type: array
+                          items:
+                              description: Jpg or png image
+                    responses:
+                        '200':
+                            description: Ok
+                        '401':
+                            description: Expired JWT Token | JWT Token not found | Invalid JWT Token
+                        '403':
+                            description: Forbidden
+                        '404':
+                            description: Not found
+                delete:
+                    security:
+                        name: Bearer
+                    summary: Delete post
+                    produces:
+                        - application/json
+                    tags:
+                        - posts
+                    parameters:
+                        - name: Authorization
+                          description: JWT token
+                          in: header
+                          required: true
+                          type: string
+                          default: Bearer token
+                        - name: id
+                          description: Post ID
+                          in: path
+                          required: true
+                          type: integer
+                    responses:
+                        '200':
+                            description: Ok
+                        '401':
+                            description: Expired JWT Token | JWT Token not found | Invalid JWT Token
+                        '403':
+                            description: Forbidden
+                        '404':
+                            description: Not found
+            /api/v1/posts/{id}/remove_image/{image_id}:
+                delete:
+                    security:
+                        name: Bearer
+                    summary: Delete post image
+                    produces:
+                        - application/json
+                    tags:
+                        - posts
+                    parameters:
+                        - name: Authorization
+                          description: JWT token
+                          in: header
+                          required: true
+                          type: string
+                          default: Bearer token
+                        - name: id
+                          description: Post ID
+                          in: path
+                          required: true
+                          type: integer
+                        - name: image_id
+                          description: PostImage ID
+                          in: path
+                          required: true
+                          type: integer
+                    responses:
+                        '200':
+                            description: Ok
+                        '401':
+                            description: Expired JWT Token | JWT Token not found | Invalid JWT Token
+                        '403':
+                            description: Forbidden
+                        '404':
+                            description: Not found
+
+########################### comments ###############################################################
+
+            /api/v1/posts/{id}/comments/:
+                get:
+                    security:
+                        name: Bearer
+                    summary: Return post comments
+                    produces:
+                        - application/json
+                    tags:
+                        - comments
+                    parameters:
+                        - name: Authorization
+                          description: JWT token
+                          in: header
+                          required: true
+                          type: string
+                          default: Bearer token
+                        - name: id
+                          description: Post ID
+                          in: path
+                          required: true
+                          type: integer
+                    responses:
+                        '200':
+                            description: Ok
+                            schema:
+                                type: array
+                                items:
+                                    type: object
+                                    properties:
+                                        id:
+                                            type: integer
+                                        createdAt:
+                                            type: string
+                                            format: date-time
+                                        message:
+                                            type: string
+                                        user:
+                                            type: object
+                                            properties:
+                                                id:
+                                                    type: integer
+                                                username:
+                                                    type: string
+                                                avatar:
+                                                    type: string
+                        '401':
+                            description: Expired JWT Token | JWT Token not found | Invalid JWT Token
+                        '404':
+                            description: Not found
+                post:
+                    security:
+                        name: Bearer
+                    summary: Add comment
+                    produces:
+                        - application/json
+                    consumes:
+                        - application/json
+                    tags:
+                        - comments
+                    parameters:
+                        - name: Authorization
+                          description: JWT token
+                          in: header
+                          required: true
+                          type: string
+                          default: Bearer token
+                        - name: id
+                          description: Post ID
+                          in: path
+                          required: true
+                          type: integer
+                        - name: comment
+                          description:
+                          in: body
+                          required: true
+                          schema:
+                            type: object
+                            required:
+                                - message
+                            properties:
+                                message:
+                                    type: string
+                    responses:
+                        '201':
+                            description: Created
+                        '401':
+                            description: Expired JWT Token | JWT Token not found | Invalid JWT Token
+                        '403':
+                            description: Forbidden
+                        '404':
+                            description: Not found
+
+            /api/v1/posts/{id}/comments/{comment_id}:
+                get:
+                    security:
+                        name: Bearer
+                    summary: Return single comment
+                    produces:
+                        - application/json
+                    tags:
+                        - comments
+                    parameters:
+                        - name: Authorization
+                          description: JWT token
+                          in: header
+                          required: true
+                          type: string
+                          default: Bearer token
+                        - name: id
+                          description: Post ID
+                          in: path
+                          required: true
+                          type: integer
+                        - name: comment_id
+                          description: Comment ID
+                          in: path
+                          required: true
+                          type: integer
+                    responses:
+                        '200':
+                            description: Ok
+                            schema:
+                                type: object
+                                properties:
+                                    id:
+                                        type: integer
+                                    createdAt:
+                                        type: string
+                                        format: date-time
+                                    updatedAt:
+                                        type: string
+                                        format: date-time
+                                    message:
+                                        type: string
+                                    user:
+                                        type: object
+                                        properties:
+                                            id:
+                                                type: integer
+                                            username:
+                                                type: string
+                                            avatar:
+                                                type: string
+                        '401':
+                            description: Expired JWT Token | JWT Token not found | Invalid JWT Token
+                        '404':
+                            description: Not found
+                delete:
+                    security:
+                        name: Bearer
+                    summary: Delete comment
+                    produces:
+                        - application/json
+                    tags:
+                        - comments
+                    parameters:
+                        - name: Authorization
+                          description: JWT token
+                          in: header
+                          required: true
+                          type: string
+                          default: Bearer token
+                        - name: id
+                          description: Post ID
+                          in: path
+                          required: true
+                          type: integer
+                        - name: comment_id
+                          description: Comment ID
+                          in: path
+                          required: true
+                          type: integer
+                    responses:
+                        '200':
+                            description: Ok
+                        '401':
+                            description: Expired JWT Token | JWT Token not found | Invalid JWT Token
+                        '403':
+                            description: Forbidden
+                        '404':
+                            description: Not found
+                patch:
+                    security:
+                        name: Bearer
+                    summary: Update comment
+                    produces:
+                        - application/json
+                    consumes:
+                        - application/json
+                    tags:
+                        - comments
+                    parameters:
+                        - name: Authorization
+                          description: JWT token
+                          in: header
+                          required: true
+                          type: string
+                          default: Bearer token
+                        - name: id
+                          description: Post ID
+                          in: path
+                          required: true
+                          type: integer
+                        - name: comment_id
+                          description: Comment ID
+                          in: path
+                          required: true
+                          type: integer
+                        - name: comment
+                          description:
+                          in: body
+                          required: true
+                          schema:
+                              type: object
+                              required:
+                                - message
+                              properties:
+                                  message:
+                                      type: string
+                    responses:
+                        '200':
+                            description: Ok
+                        '401':
+                            description: Expired JWT Token | JWT Token not found | Invalid JWT Token
+                        '403':
+                            description: Forbidden
+                        '404':
+                            description: Not found
