@@ -17,13 +17,13 @@ class EntityNormalizer extends ObjectNormalizer
     protected $em;
 
     /**
-     * Entity normalizer
+     * EntityNormalizer constructor.
      *
      * @param EntityManagerInterface $em
-     * @param ClassMetadataFactoryInterface|null $classMetadataFactory
-     * @param NameConverterInterface|null $nameConverter
-     * @param PropertyAccessorInterface|null $propertyAccessor
-     * @param PropertyTypeExtractorInterface|null $propertyTypeExtractor
+     * @param null|ClassMetadataFactoryInterface $classMetadataFactory
+     * @param null|NameConverterInterface $nameConverter
+     * @param null|PropertyAccessorInterface $propertyAccessor
+     * @param null|PropertyTypeExtractorInterface $propertyTypeExtractor
      */
     public function __construct(
         EntityManagerInterface $em,
@@ -31,8 +31,7 @@ class EntityNormalizer extends ObjectNormalizer
         ?NameConverterInterface $nameConverter = null,
         ?PropertyAccessorInterface $propertyAccessor = null,
         ?PropertyTypeExtractorInterface $propertyTypeExtractor = null
-    )
-    {
+    ) {
         parent::__construct($classMetadataFactory, $nameConverter, $propertyAccessor, $propertyTypeExtractor);
 
         $this->em = $em;
