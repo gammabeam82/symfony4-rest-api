@@ -6,15 +6,11 @@ use App\Entity\Category;
 use App\Entity\PostImage;
 use App\Entity\Tag;
 use App\Request\RequestObject;
+use Doctrine\Common\Collections\Collection;
 use Symfony\Component\Validator\Constraints as Assert;
 
 class CreatePostRequest extends RequestObject
 {
-    public const RELATIONS = [
-        'category' => Category::class,
-        'tags' => Tag::class
-    ];
-
     public const FILES = [
         'images' => [
             'class' => PostImage::class,
@@ -52,11 +48,15 @@ class CreatePostRequest extends RequestObject
     public $updatedAt;
 
     /**
+     * @var Category
+     *
      * @Assert\Valid()
      */
     public $category;
 
     /**
+     * @var Tag[]|Collection
+     *
      * @Assert\Valid()
      */
     public $tags;
