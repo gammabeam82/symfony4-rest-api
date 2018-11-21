@@ -9,8 +9,6 @@ use Symfony\Component\Validator\Constraints as Assert;
 class UpdateTagRequest extends RequestObject
 {
     /**
-     * @var string
-     *
      * @Assert\NotBlank()
      * @Assert\Length(max=255)
      * @AppAssert\UniqueValue(entityClass="App\Entity\Tag", field="name")

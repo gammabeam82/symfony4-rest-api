@@ -179,6 +179,9 @@ class Post
             ->setTags($dto->tags);
 
         foreach ($dto->getFiles() as $image) {
+            if (false === $image instanceof PostImage) {
+                continue;
+            }
             /** @var PostImage $image */
             $image->setPost($this);
             $this->addImage($image);
@@ -392,9 +395,9 @@ class Post
     }
 
     /**
-     * @return Collection|PostImage[]
+     * @return PostImage[]|Collection|null
      */
-    public function getImages(): Collection
+    public function getImages(): ?Collection
     {
         return $this->images;
     }
@@ -435,8 +438,10 @@ class Post
     {
         $this->images = $images;
 
-        foreach ($this->images as $image) {
-            $image->setPost($this);
+        if (null !== $this->getImages()) {
+            foreach ($this->images as $image) {
+                $image->setPost($this);
+            }
         }
 
         return $this;

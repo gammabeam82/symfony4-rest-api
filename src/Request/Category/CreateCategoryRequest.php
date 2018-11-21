@@ -9,8 +9,6 @@ use Symfony\Component\Validator\Constraints as Assert;
 class CreateCategoryRequest extends RequestObject
 {
     /**
-     * @var string
-     *
      * @Assert\NotBlank()
      * @Assert\Length(max=255)
      * @AppAssert\UniqueValue(entityClass="App\Entity\Category", field="name")

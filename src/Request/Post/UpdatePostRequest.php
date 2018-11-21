@@ -6,7 +6,6 @@ use App\Entity\Category;
 use App\Entity\PostImage;
 use App\Entity\Tag;
 use App\Request\RequestObject;
-use Doctrine\Common\Collections\Collection;
 use Symfony\Component\Validator\Constraints as Assert;
 
 class UpdatePostRequest extends RequestObject
@@ -25,53 +24,39 @@ class UpdatePostRequest extends RequestObject
     ];
 
     /**
-     * @var string
-     *
      * @Assert\NotBlank()
      * @Assert\Length(max=255)
      */
     public $title;
 
     /**
-     * @var string
-     *
      * @Assert\NotBlank()
      * @Assert\Length(min=3)
      */
     public $summary;
 
     /**
-     * @var string
-     *
      * @Assert\NotBlank()
      * @Assert\Length(min=3)
      */
     public $article;
 
     /**
-     * @var Category
-     *
      * @Assert\Valid()
      */
     public $category;
 
     /**
-     * @var Collection|Tag[]
-     *
      * @Assert\Valid()
      * */
     public $tags;
 
     /**
-     * @var \DateTimeInterface
-     *
      * @Assert\DateTime()
      */
     public $updatedAt;
 
     /**
-     * @var Collection|PostImage[]
-     *
      * @Assert\Valid()
      */
     public $images;
