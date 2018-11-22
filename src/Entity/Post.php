@@ -313,12 +313,11 @@ class Post
      */
     public function setTags(?Collection $tags): self
     {
-        $this->tags = $tags;
-
-        if (null !== $this->tags) {
-            foreach ($this->tags as $tag) {
+        if (null !== $tags) {
+            foreach ($tags as $tag) {
                 $tag->addPost($this);
             }
+            $this->tags = $tags;
         }
 
         return $this;

@@ -61,7 +61,7 @@ class RequestObjectSubscriber implements EventSubscriberInterface
 
             if (null === $config['class']) {
                 $this->accessor->setValue($dto, $config['fileProperty'], $files->get($file));
-                return;
+                continue;
             }
 
             $reflectionClass = new \ReflectionClass($config['class']);
