@@ -16,7 +16,7 @@ class ArrayCollectionNormalizer extends ObjectNormalizer implements Denormalizer
      */
     public function supportsDenormalization($data, $type, $format = null)
     {
-        return false !== strpos($type, '[]') && false !== is_array($data);
+        return false !== strpos($type, '[]');
     }
 
     /**
@@ -26,9 +26,13 @@ class ArrayCollectionNormalizer extends ObjectNormalizer implements Denormalizer
     {
         $result = new ArrayCollection();
 
+        if (false === is_array($data)) {
+            return $result;
+        }
+
         foreach ($data as $item) {
             $entity = $this->denormalizer->denormalize($item, $this->getClassName($class), $format, $context);
-            if(null !== $entity) {
+            if (null !== $entity) {
                 $result->add($entity);
             }
         }
