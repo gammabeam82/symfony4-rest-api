@@ -150,10 +150,6 @@ class Post
     {
         $post = new Post();
 
-        if (null !== $dto->tags) {
-            $dto->tags = new ArrayCollection($dto->tags);
-        }
-
         $post
             ->setTitle($dto->title)
             ->setSummary($dto->summary)
@@ -174,10 +170,6 @@ class Post
      */
     public function updateFromDTO(UpdatePostRequest $dto): self
     {
-        if (null !== $dto->tags) {
-            $dto->tags = new ArrayCollection($dto->tags);
-        }
-
         $this
             ->setTitle($dto->title)
             ->setSummary($dto->summary)
