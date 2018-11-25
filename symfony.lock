@@ -2,6 +2,9 @@
     "behat/transliterator": {
         "version": "v1.2.0"
     },
+    "dnoegel/php-xdg-base-dir": {
+        "version": "0.1"
+    },
     "doctrine/annotations": {
         "version": "1.0",
         "recipe": {
@@ -119,6 +122,12 @@
     "fzaninotto/faker": {
         "version": "v1.8.0"
     },
+    "jakub-onderka/php-console-color": {
+        "version": "v0.2"
+    },
+    "jakub-onderka/php-console-highlighter": {
+        "version": "v0.4"
+    },
     "jdorn/sql-formatter": {
         "version": "v1.2.17"
     },
@@ -190,6 +199,9 @@
     },
     "psr/simple-cache": {
         "version": "1.0.1"
+    },
+    "psy/psysh": {
+        "version": "v0.9.9"
     },
     "sensio/framework-extra-bundle": {
         "version": "5.2",
@@ -478,6 +490,9 @@
     },
     "symfony/yaml": {
         "version": "v4.1.5"
+    },
+    "theofidry/psysh-bundle": {
+        "version": "v3.5.0"
     },
     "twig/twig": {
         "version": "v2.5.0"

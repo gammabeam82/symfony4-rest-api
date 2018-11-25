@@ -3,6 +3,8 @@
 namespace App\RestController;
 
 use App\Entity\User;
+use App\Event\UserEvent;
+use App\Events;
 use App\Repository\UserRepository;
 use App\Request\User\ChangeAvatarRequest;
 use App\Request\User\ChangeEmailRequest;
@@ -16,6 +18,7 @@ use FOS\RestBundle\Request\ParamFetcher;
 use FOS\RestBundle\View\View;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -30,12 +33,15 @@ class UserController extends FOSRestController
      *
      * @param CreateUserRequest $userRequest
      * @param UserService $service
+     * @param EventDispatcherInterface $dispatcher
      *
      * @return View
      */
-    public function registerAction(CreateUserRequest $userRequest, UserService $service): View
+    public function registerAction(CreateUserRequest $userRequest, UserService $service, EventDispatcherInterface $dispatcher): View
     {
         $user = $service->createUser($userRequest);
+
+        $dispatcher->dispatch(Events::USER_CREATED_EVENT, new UserEvent($user));
 
         return View::create($user, Response::HTTP_CREATED);
     }

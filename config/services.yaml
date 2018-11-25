@@ -36,10 +36,6 @@ services:
         class: Symfony\Component\PropertyAccess\PropertyAccessor
         factory: [Symfony\Component\PropertyAccess\PropertyAccess, createPropertyAccessor]
 
-    Faker\Generator:
-        class: Faker\Generator
-        factory: [Faker\Factory, create]
-
     App\Service\FileNamer:
         class: App\Service\FileNamer
         public: true

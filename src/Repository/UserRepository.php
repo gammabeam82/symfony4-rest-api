@@ -30,4 +30,18 @@ class UserRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    /**
+     * @return User[]
+     */
+    public function findInactiveUsers(): array
+    {
+        $qb = $this->createQueryBuilder('u')
+            ->where('u.enabled = :status')
+            ->setParameter('status', false);
+
+        return $qb
+            ->getQuery()
+            ->getResult();
+    }
 }

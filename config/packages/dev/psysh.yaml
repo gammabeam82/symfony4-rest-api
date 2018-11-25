@@ -1,0 +1,4 @@
+psysh:
+    variables:
+        router: "@router"
+        em: "@doctrine.orm.default_entity_manager"
