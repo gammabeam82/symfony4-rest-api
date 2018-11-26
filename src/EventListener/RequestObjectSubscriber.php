@@ -5,7 +5,6 @@ namespace App\EventListener;
 use App\Event\RequestObjectEvent;
 use App\Events;
 use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\ORM\EntityNotFoundException;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\FileBag;
 use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
@@ -33,17 +32,16 @@ class RequestObjectSubscriber implements EventSubscriberInterface
     public static function getSubscribedEvents(): array
     {
         return [
-            Events::REQUEST_OBJECT_EVENT => 'onNewRequest',
+            Events::REQUEST_OBJECT_EVENT => 'mapFiles',
         ];
     }
 
     /**
      * @param RequestObjectEvent $event
      *
-     * @throws EntityNotFoundException
      * @throws \ReflectionException
      */
-    public function onNewRequest(RequestObjectEvent $event): void
+    public function mapFiles(RequestObjectEvent $event): void
     {
         $dto = $event->getRequestObject();
 
@@ -54,13 +52,13 @@ class RequestObjectSubscriber implements EventSubscriberInterface
         /** @var FileBag $files */
         $files = $event->getRequest()->files;
 
-        foreach ($dto->getFiles() as $file => $config) {
-            if (null === $files->get($file)) {
+        foreach ($dto->getFiles() as $filename => $config) {
+            if (null === $files->get($filename)) {
                 continue;
             }
 
             if (null === $config['class']) {
-                $this->accessor->setValue($dto, $config['fileProperty'], $files->get($file));
+                $this->accessor->setValue($dto, $config['fileProperty'], $files->get($filename));
                 continue;
             }
 
@@ -68,7 +66,7 @@ class RequestObjectSubscriber implements EventSubscriberInterface
 
             if (false !== $config['collection']) {
                 $collection = new ArrayCollection();
-                foreach ($files->get($file) as $uploadedFile) {
+                foreach ($files->get($filename) as $uploadedFile) {
                     $attachment = $reflectionClass->newInstance();
                     $attachment->setFile($uploadedFile);
                     $collection->add($attachment);
@@ -76,7 +74,7 @@ class RequestObjectSubscriber implements EventSubscriberInterface
                 $attachment = $collection;
             } else {
                 $attachment = $reflectionClass->newInstance();
-                $attachment->setFile($files->get($file));
+                $attachment->setFile($files->get($filename));
             }
 
             $this->accessor->setValue($dto, $config['fileProperty'], $attachment);
