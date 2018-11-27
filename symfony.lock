@@ -122,6 +122,9 @@
     "fzaninotto/faker": {
         "version": "v1.8.0"
     },
+    "gammabeam82/schema-checker": {
+        "version": "dev-master"
+    },
     "jakub-onderka/php-console-color": {
         "version": "v0.2"
     },

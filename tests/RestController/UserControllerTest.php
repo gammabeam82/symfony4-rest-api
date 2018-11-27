@@ -1,12 +1,14 @@
-<?php
+<?php /** @noinspection PhpUnhandledExceptionInspection */
 
 namespace App\Tests\RestController;
 
-use Symfony\Bundle\FrameworkBundle\Client;
-use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
+use App\Tests\BaseTest;
+use Symfony\Component\HttpFoundation\Response;
 
-class UserControllerTest extends WebTestCase
+/**
+ * @group user
+ */
+class UserControllerTest extends BaseTest
 {
     private const USER = [
         'username' => 'test',
@@ -14,110 +16,122 @@ class UserControllerTest extends WebTestCase
         'password' => 'qwerty'
     ];
 
-    private const ADMIN = [
-        'username' => 'testuser',
-        'password' => 'p@ssword'
+    private const LIST_SCHEMA = [
+        'id' => 'integer',
+        'username' => 'string',
+        'avatar' => 'nullable|string'
     ];
 
-    /**
-     * @var Client
-     */
-    private $client;
-
-
-    public function setUp()
-    {
-        parent::setUp();
-        $this->client = static::createClient();
-    }
-
-    private function getToken(array $credentials): string
-    {
-        $this->client->request('POST', '/api/v1/login', [], [], [], json_encode($credentials));
-        $content = json_decode($this->client->getResponse()->getContent(), true);
-
-        return array_key_exists('token', $content) ? sprintf("Bearer %s", $content['token']) : '';
-    }
-
-    private function getMockFile(): UploadedFile
-    {
-        $container = self::$kernel->getContainer();
-        $tmp = tempnam(sys_get_temp_dir(), 'upl');
-        copy($container->getParameter('upl_file'), $tmp);
-
-        return new UploadedFile($tmp, '1.jpg');
-    }
+    private const DETAILS_SCHEMA = [
+        'id' => 'integer',
+        'username' => 'string',
+        'avatar' => 'nullable|string',
+        'email' => 'string',
+        'roles' => ['string'],
+        'posts' => [
+            'nullable' => true,
+            'id' => 'integer',
+            'title' => 'string'
+        ]
+    ];
 
     public function testCreateUser(): void
     {
-        $this->client->request('POST', '/api/v1/users/', self::USER);
+        static::$client->request('POST', '/api/v1/users/', self::USER, [
+            'avatar' => $this->getFile()
+        ]);
 
-        $this->assertEquals(201, $this->client->getResponse()->getStatusCode());
+        $this->assertEquals(Response::HTTP_CREATED, static::$client->getResponse()->getStatusCode());
     }
 
     public function testCreateUserWithError(): void
     {
-        $this->client->request('POST', '/api/v1/users/', self::USER);
+        static::$client->request('POST', '/api/v1/users/', self::USER);
 
-        $this->assertEquals(400, $this->client->getResponse()->getStatusCode());
+        $this->assertEquals(Response::HTTP_BAD_REQUEST, static::$client->getResponse()->getStatusCode());
     }
 
     public function testLogin(): void
     {
-        $this->client->request('POST', '/api/v1/login', [], [], [], json_encode(self::USER));
+        static::$client->request('POST', '/api/v1/login', [], [], [], json_encode(self::USER));
 
-        $response = $this->client->getResponse();
+        $response = static::$client->getResponse();
         $content = json_decode($response->getContent(), true);
 
-        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertEquals(Response::HTTP_OK, $response->getStatusCode());
         $this->assertArrayHasKey('token', $content);
-    }
-
-    public function testGetSingleUser(): void
-    {
-        $this->client->request('GET', '/api/v1/users/1', [], [], [
-            'HTTP_Authorization' => $this->getToken(self::USER)
-        ]);
-
-        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
     }
 
     public function testGetList(): void
     {
-        $this->client->request('GET', '/api/v1/users/', [], [], [
-            'HTTP_Authorization' => $this->getToken(self::USER)
+        static::$client->request('GET', '/api/v1/users/', [], [], [
+            'HTTP_Authorization' => static::$token
         ]);
 
-        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
+        $response = static::$client->getResponse();
+
+        $this->assertEquals(Response::HTTP_OK, $response->getStatusCode());
+        $this->assertTrue(
+            static::$schemaChecker->assertDataMatchesSchema($response->getContent(), self::LIST_SCHEMA),
+            static::$schemaChecker->getViolations()
+        );
     }
 
     public function testGetListWithError(): void
     {
-        $this->client->request('GET', '/api/v1/users/', [], [], []);
+        static::$client->request('GET', '/api/v1/users/');
 
-        $this->assertEquals(401, $this->client->getResponse()->getStatusCode());
+        $this->assertEquals(Response::HTTP_UNAUTHORIZED, static::$client->getResponse()->getStatusCode());
     }
 
-    public function testUpdateEmail(): void
+
+    public function testGetSingleUser(): void
     {
-        $data = ['email' => 'test2@test.test'];
+        static::$client->request('GET', '/api/v1/users/1', [], [], [
+            'HTTP_Authorization' => static::$token
+        ]);
 
-        $this->client->request('PATCH', '/api/v1/users/2/change_email', [], [], [
-            'HTTP_Authorization' => $this->getToken(self::USER)
-        ], json_encode($data));
+        $response = static::$client->getResponse();
 
-        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
+        $this->assertEquals(Response::HTTP_OK, $response->getStatusCode());
+        $this->assertTrue(
+            static::$schemaChecker->assertDataMatchesSchema($response->getContent(), self::DETAILS_SCHEMA),
+            static::$schemaChecker->getViolations()
+        );
     }
 
     public function testUpdateAvatar(): void
     {
-        $this->client->request('PATCH', '/api/v1/users/2/change_avatar', [], [
-            'avatar' => $this->getMockFile()
+        static::$client->request('PATCH', '/api/v1/users/1/change_avatar', [], [
+            'avatar' => $this->getFile()
         ], [
-            'HTTP_Authorization' => $this->getToken(self::USER)
+            'HTTP_Authorization' => static::$token
         ]);
 
-        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
+        $this->assertEquals(Response::HTTP_OK, static::$client->getResponse()->getStatusCode());
+    }
+
+    public function testDeleteAvatar(): void
+    {
+        static::$client->request('DELETE', '/api/v1/users/1/delete_avatar', [], [], [
+            'HTTP_Authorization' => static::$token
+        ]);
+
+        $this->assertEquals(Response::HTTP_OK, static::$client->getResponse()->getStatusCode());
+    }
+
+    public function testUpdateEmail(): void
+    {
+        $data = [
+            'email' => 'test2@test.test'
+        ];
+
+        static::$client->request('PATCH', '/api/v1/users/1/change_email', [], [], [
+            'HTTP_Authorization' => static::$token,
+            'CONTENT_TYPE' => 'application/json'
+        ], json_encode($data));
+
+        $this->assertEquals(Response::HTTP_OK, static::$client->getResponse()->getStatusCode());
     }
 
     public function testUpdatePassword(): void
@@ -127,55 +141,56 @@ class UserControllerTest extends WebTestCase
             'repeatedPassword' => 'zxcvbnm'
         ];
 
-        $this->client->request('PATCH', '/api/v1/users/2/change_password', [], [], [
-            'HTTP_Authorization' => $this->getToken(self::USER)
+        static::$client->request('PATCH', '/api/v1/users/2/change_password', [], [], [
+            'HTTP_Authorization' => $this->getToken(self::USER),
+            'CONTENT_TYPE' => 'application/json'
         ], json_encode($data));
 
-        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
+        $this->assertEquals(Response::HTTP_OK, static::$client->getResponse()->getStatusCode());
     }
 
     public function testPromoteUser(): void
     {
-        $this->client->request('PATCH', '/api/v1/users/2/promote', [], [], [
-            'HTTP_Authorization' => $this->getToken(self::ADMIN)
+        static::$client->request('PATCH', '/api/v1/users/2/promote', [], [], [
+            'HTTP_Authorization' => static::$token
         ]);
 
-        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
+        $this->assertEquals(Response::HTTP_OK, static::$client->getResponse()->getStatusCode());
     }
 
     public function testDemoteUser(): void
     {
-        $this->client->request('PATCH', '/api/v1/users/2/demote', [], [], [
-            'HTTP_Authorization' => $this->getToken(self::ADMIN)
+        static::$client->request('PATCH', '/api/v1/users/2/demote', [], [], [
+            'HTTP_Authorization' => static::$token
         ]);
 
-        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
+        $this->assertEquals(Response::HTTP_OK, static::$client->getResponse()->getStatusCode());
     }
 
-    public function testBanUser(): void
+    public function testBlockUser(): void
     {
-        $this->client->request('PATCH', '/api/v1/users/2/block', [], [], [
-            'HTTP_Authorization' => $this->getToken(self::ADMIN)
+        static::$client->request('PATCH', '/api/v1/users/2/block', [], [], [
+            'HTTP_Authorization' => static::$token
         ]);
 
-        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
+        $this->assertEquals(Response::HTTP_OK, static::$client->getResponse()->getStatusCode());
     }
 
-    public function testUnbanUser(): void
+    public function testUnblockUser(): void
     {
-        $this->client->request('PATCH', '/api/v1/users/2/unblock', [], [], [
-            'HTTP_Authorization' => $this->getToken(self::ADMIN)
+        static::$client->request('PATCH', '/api/v1/users/2/unblock', [], [], [
+            'HTTP_Authorization' => static::$token
         ]);
 
-        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
+        $this->assertEquals(Response::HTTP_OK, static::$client->getResponse()->getStatusCode());
     }
 
     public function testDeleteUser(): void
     {
-        $this->client->request('DELETE', '/api/v1/users/2', [], [], [
-            'HTTP_Authorization' => $this->getToken(self::ADMIN)
+        static::$client->request('DELETE', '/api/v1/users/2', [], [], [
+            'HTTP_Authorization' => static::$token
         ]);
 
-        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
+        $this->assertEquals(Response::HTTP_OK, static::$client->getResponse()->getStatusCode());
     }
 }

@@ -36,7 +36,7 @@ class Category
      * @var Post[]
      *
      * @Groups({"category_details", "category_posts"})
-     * @ORM\OneToMany(targetEntity="App\Entity\Post", mappedBy="category", cascade={"persist"})
+     * @ORM\OneToMany(targetEntity="App\Entity\Post", mappedBy="category", cascade={"persist", "remove"})
      */
     private $posts;
 

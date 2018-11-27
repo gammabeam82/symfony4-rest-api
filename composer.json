@@ -37,6 +37,7 @@
         "doctrine/doctrine-fixtures-bundle": "^3.0",
         "enumag/no-thanks": "^0.1.0",
         "fzaninotto/faker": "^1.8",
+        "gammabeam82/schema-checker": "dev-master",
         "squizlabs/php_codesniffer": "*",
         "symfony/debug-pack": "*",
         "symfony/dotenv": "*",
