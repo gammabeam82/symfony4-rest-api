@@ -61,7 +61,6 @@ class Post
     /**
      * @var \DateTimeInterface
      *
-     * @Groups({"post_list", "post_details"})
      * @ORM\Column(type="datetime")
      */
     private $createdAt;
@@ -103,7 +102,6 @@ class Post
     /**
      * @var \DateTimeInterface
      *
-     * @Groups({"post_details"})
      * @ORM\Column(type="datetime")
      */
     private $updatedAt;
@@ -130,6 +128,20 @@ class Post
      * @ORM\OneToMany(targetEntity="App\Entity\Comment", mappedBy="post", orphanRemoval=true)
      */
     private $comments;
+
+    /**
+     * @var int
+     *
+     * @Groups({"post_list", "post_details"})
+     */
+    private $createdAtTimestamp;
+
+    /**
+     * @var int
+     *
+     * @Groups({"post_details"})
+     */
+    private $updatedAtTimestamp;
 
     /**
      * Post constructor.
@@ -484,5 +496,21 @@ class Post
         }
 
         return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getCreatedAtTimestamp(): int
+    {
+        return $this->createdAt->getTimestamp();
+    }
+
+    /**
+     * @return int
+     */
+    public function getUpdatedAtTimestamp(): int
+    {
+        return $this->updatedAt->getTimestamp();
     }
 }

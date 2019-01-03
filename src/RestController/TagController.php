@@ -22,18 +22,32 @@ use Symfony\Component\Routing\Annotation\Route;
 class TagController extends FOSRestController
 {
     /**
+     * @var TagService
+     */
+    private $tagService;
+
+    /**
+     * TagController constructor.
+     *
+     * @param TagService $tagService
+     */
+    public function __construct(TagService $tagService)
+    {
+        $this->tagService = $tagService;
+    }
+
+    /**
      * @IsGranted("ROLE_ADMIN")
      * @Rest\Post("/", name="create_tag")
      * @Rest\View(serializerGroups={"tag_details"})
      *
      * @param CreateTagRequest $tagRequest
-     * @param TagService $service
      *
      * @return View
      */
-    public function createTagAction(CreateTagRequest $tagRequest, TagService $service): View
+    public function createTagAction(CreateTagRequest $tagRequest): View
     {
-        $tag = $service->create($tagRequest);
+        $tag = $this->tagService->create($tagRequest);
 
         return View::create($tag, Response::HTTP_CREATED);
     }
@@ -46,13 +60,12 @@ class TagController extends FOSRestController
      *
      * @param UpdateTagRequest $tagRequest
      * @param Tag $tag
-     * @param TagService $service
      *
      * @return View
      */
-    public function updateTagAction(UpdateTagRequest $tagRequest, Tag $tag, TagService $service): View
+    public function updateTagAction(UpdateTagRequest $tagRequest, Tag $tag): View
     {
-        $service->update($tagRequest, $tag);
+        $this->tagService->update($tagRequest, $tag);
 
         return View::create($tag, Response::HTTP_OK);
     }
@@ -78,13 +91,12 @@ class TagController extends FOSRestController
      * @ParamConverter("tag", class="App:Tag")
      *
      * @param Tag $tag
-     * @param TagService $service
      *
      * @return View
      */
-    public function deleteTagAction(Tag $tag, TagService $service): View
+    public function deleteTagAction(Tag $tag): View
     {
-        $service->delete($tag);
+        $this->tagService->delete($tag);
 
         return View::create($tag, Response::HTTP_OK);
     }

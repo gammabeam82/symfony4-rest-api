@@ -20,10 +20,10 @@ class EntityNormalizer extends ObjectNormalizer
      * EntityNormalizer constructor.
      *
      * @param EntityManagerInterface $em
-     * @param null|ClassMetadataFactoryInterface $classMetadataFactory
-     * @param null|NameConverterInterface $nameConverter
-     * @param null|PropertyAccessorInterface $propertyAccessor
-     * @param null|PropertyTypeExtractorInterface $propertyTypeExtractor
+     * @param ClassMetadataFactoryInterface|null $classMetadataFactory
+     * @param NameConverterInterface|null $nameConverter
+     * @param PropertyAccessorInterface|null $propertyAccessor
+     * @param PropertyTypeExtractorInterface|null $propertyTypeExtractor
      */
     public function __construct(
         EntityManagerInterface $em,

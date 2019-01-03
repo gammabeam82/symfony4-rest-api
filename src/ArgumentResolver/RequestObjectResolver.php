@@ -38,8 +38,11 @@ class RequestObjectResolver implements ArgumentValueResolverInterface
      * @param ValidatorInterface $validator
      * @param EventDispatcherInterface $dispatcher
      */
-    public function __construct(DenormalizerInterface $denormalizer, ValidatorInterface $validator, EventDispatcherInterface $dispatcher)
-    {
+    public function __construct(
+        DenormalizerInterface $denormalizer,
+        ValidatorInterface $validator,
+        EventDispatcherInterface $dispatcher
+    ) {
         $this->denormalizer = $denormalizer;
         $this->validator = $validator;
         $this->dispatcher = $dispatcher;

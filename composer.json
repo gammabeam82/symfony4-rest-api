@@ -73,8 +73,8 @@
         "symfony/polyfill-php56": "*"
     },
     "scripts": {
-        "check": "vendor/bin/phpcs src tests --ignore=*/Migrations/* -n",
-        "fix": "vendor/bin/phpcbf src tests --ignore=*/Migrations/* -n",
+        "check": "vendor/bin/phpcs src --ignore=*/Migrations/* -n",
+        "fix": "vendor/bin/phpcbf src --ignore=*/Migrations/* -n",
         "auto-scripts": {
             "cache:clear": "symfony-cmd",
             "assets:install %PUBLIC_DIR%": "symfony-cmd"

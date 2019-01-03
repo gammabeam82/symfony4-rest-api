@@ -24,19 +24,33 @@ use Symfony\Component\Routing\Annotation\Route;
 class PostController extends FOSRestController
 {
     /**
+     * @var PostService
+     */
+    private $postService;
+
+    /**
+     * PostController constructor.
+     *
+     * @param PostService $postService
+     */
+    public function __construct(PostService $postService)
+    {
+        $this->postService = $postService;
+    }
+
+    /**
      * @Rest\Post("/", name="create_post")
      * @Rest\View(serializerGroups={"post_details", "category_list", "tag_list", "user_list"})
      *
      * @param CreatePostRequest $postRequest
-     * @param PostService $service
      *
      * @return View
      */
-    public function createPostAction(CreatePostRequest $postRequest, PostService $service): View
+    public function createPostAction(CreatePostRequest $postRequest): View
     {
         $this->denyAccessUnlessGranted(Actions::CREATE, new Post());
 
-        $post = $service->create($postRequest);
+        $post = $this->postService->create($postRequest);
 
         return View::create($post, Response::HTTP_CREATED);
     }
@@ -49,13 +63,12 @@ class PostController extends FOSRestController
      *
      * @param UpdatePostRequest $postRequest
      * @param Post $post
-     * @param PostService $service
      *
      * @return View
      */
-    public function updatePostAction(UpdatePostRequest $postRequest, Post $post, PostService $service): View
+    public function updatePostAction(UpdatePostRequest $postRequest, Post $post): View
     {
-        $service->update($postRequest, $post);
+        $this->postService->update($postRequest, $post);
 
         return View::create($post, Response::HTTP_OK);
     }
@@ -69,13 +82,12 @@ class PostController extends FOSRestController
      *
      * @param Post $post
      * @param PostImage $image
-     * @param PostService $service
      *
      * @return View
      */
-    public function removeImageAction(Post $post, PostImage $image, PostService $service): View
+    public function removeImageAction(Post $post, PostImage $image): View
     {
-        $service->removeImage($post, $image);
+        $this->postService->removeImage($post, $image);
 
         return View::create($post, Response::HTTP_OK);
     }
@@ -101,13 +113,12 @@ class PostController extends FOSRestController
      * @ParamConverter("post", class="App:Post")
      *
      * @param Post $post
-     * @param PostService $service
      *
      * @return View
      */
-    public function deletePostAction(Post $post, PostService $service): View
+    public function deletePostAction(Post $post): View
     {
-        $service->delete($post);
+        $this->postService->delete($post);
 
         return View::create($post, Response::HTTP_OK);
     }

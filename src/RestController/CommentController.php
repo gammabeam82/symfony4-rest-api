@@ -23,21 +23,35 @@ use Symfony\Component\Routing\Annotation\Route;
 class CommentController extends FOSRestController
 {
     /**
+     * @var CommentService
+     */
+    private $commentService;
+
+    /**
+     * CommentController constructor.
+     *
+     * @param CommentService $commentService
+     */
+    public function __construct(CommentService $commentService)
+    {
+        $this->commentService = $commentService;
+    }
+
+    /**
      * @Rest\Post("/{id}/comments/", name="create_post_comment")
      * @Rest\View(serializerGroups={"comment_details", "user_list"})
      * @ParamConverter("post", class="App:Post")
      *
      * @param CreateCommentRequest $commentRequest
      * @param Post $post
-     * @param CommentService $service
      *
      * @return View
      */
-    public function createPostCommentAction(CreateCommentRequest $commentRequest, Post $post, CommentService $service): View
+    public function createPostCommentAction(CreateCommentRequest $commentRequest, Post $post): View
     {
         $this->denyAccessUnlessGranted(Actions::CREATE, new Comment());
 
-        $comment = $service->create($commentRequest, $post);
+        $comment = $this->commentService->create($commentRequest, $post);
 
         return View::create($comment, Response::HTTP_OK);
     }
@@ -50,13 +64,12 @@ class CommentController extends FOSRestController
      *
      * @param CreateCommentRequest $commentRequest
      * @param Comment $comment
-     * @param CommentService $service
      *
      * @return View
      */
-    public function updatePostCommentAction(UpdateCommentRequest $commentRequest, Comment $comment, CommentService $service): View
+    public function updatePostCommentAction(UpdateCommentRequest $commentRequest, Comment $comment): View
     {
-        $service->update($commentRequest, $comment);
+        $this->commentService->update($commentRequest, $comment);
 
         return View::create($comment, Response::HTTP_OK);
     }
@@ -68,13 +81,12 @@ class CommentController extends FOSRestController
      * @ParamConverter("comment", class="App:Comment", options={"id"="comment_id"})
      *
      * @param Comment $comment
-     * @param CommentService $service
      *
      * @return View
      */
-    public function deletePostCommentAction(Comment $comment, CommentService $service): View
+    public function deletePostCommentAction(Comment $comment): View
     {
-        $service->delete($comment);
+        $this->commentService->delete($comment);
 
         return View::create($comment, Response::HTTP_OK);
     }

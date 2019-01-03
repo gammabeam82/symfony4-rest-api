@@ -79,7 +79,6 @@ class User extends BaseUser
     /**
      * @var \DateTime
      *
-     * @Groups({"user_details"})
      * @ORM\Column(type="datetime")
      */
     private $createdAt;
@@ -87,7 +86,6 @@ class User extends BaseUser
     /**
      * @var \DateTime
      *
-     * @Groups({"user_details"})
      * @ORM\Column(type="datetime")
      */
     private $updatedAt;

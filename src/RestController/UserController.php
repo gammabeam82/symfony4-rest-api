@@ -28,18 +28,32 @@ use Symfony\Component\Routing\Annotation\Route;
 class UserController extends FOSRestController
 {
     /**
+     * @var UserService
+     */
+    private $userService;
+
+    /**
+     * UserController constructor.
+     *
+     * @param UserService $userService
+     */
+    public function __construct(UserService $userService)
+    {
+        $this->userService = $userService;
+    }
+
+    /**
      * @Rest\Post("/", name="create_user")
      * @Rest\View(serializerGroups={"user_details"})
      *
      * @param CreateUserRequest $userRequest
-     * @param UserService $service
      * @param EventDispatcherInterface $dispatcher
      *
      * @return View
      */
-    public function registerAction(CreateUserRequest $userRequest, UserService $service, EventDispatcherInterface $dispatcher): View
+    public function registerAction(CreateUserRequest $userRequest, EventDispatcherInterface $dispatcher): View
     {
-        $user = $service->createUser($userRequest);
+        $user = $this->userService->createUser($userRequest);
 
         $dispatcher->dispatch(Events::USER_CREATED_EVENT, new UserEvent($user));
 
@@ -54,13 +68,12 @@ class UserController extends FOSRestController
      *
      * @param ChangePasswordRequest $passwordRequest
      * @param User $user
-     * @param UserService $service
      *
      * @return View
      */
-    public function changePasswordAction(ChangePasswordRequest $passwordRequest, User $user, UserService $service): View
+    public function changePasswordAction(ChangePasswordRequest $passwordRequest, User $user): View
     {
-        $service->changeUserPassword($user, $passwordRequest);
+        $this->userService->changeUserPassword($user, $passwordRequest);
 
         return View::create($user, Response::HTTP_OK);
     }
@@ -73,13 +86,12 @@ class UserController extends FOSRestController
      *
      * @param ChangeEmailRequest $emailRequest
      * @param User $user
-     * @param UserService $service
      *
      * @return View
      */
-    public function changeEmailAction(ChangeEmailRequest $emailRequest, User $user, UserService $service): View
+    public function changeEmailAction(ChangeEmailRequest $emailRequest, User $user): View
     {
-        $service->changeUserEmail($user, $emailRequest);
+        $this->userService->changeUserEmail($user, $emailRequest);
 
         return View::create($user, Response::HTTP_OK);
     }
@@ -92,13 +104,12 @@ class UserController extends FOSRestController
      *
      * @param ChangeAvatarRequest $avatarRequest
      * @param User $user
-     * @param UserService $service
      *
      * @return View
      */
-    public function changeAvatarAction(ChangeAvatarRequest $avatarRequest, User $user, UserService $service): View
+    public function changeAvatarAction(ChangeAvatarRequest $avatarRequest, User $user): View
     {
-        $service->changeUserAvatar($user, $avatarRequest);
+        $this->userService->changeUserAvatar($user, $avatarRequest);
 
         return View::create($user, Response::HTTP_OK);
     }
@@ -128,13 +139,12 @@ class UserController extends FOSRestController
      * @ParamConverter("user", class="App:User")
      *
      * @param User $user
-     * @param UserService $service
      *
      * @return View
      */
-    public function removeAdminAction(User $user, UserService $service): View
+    public function removeAdminAction(User $user): View
     {
-        $service->removeAdmin($user);
+        $this->userService->removeAdmin($user);
 
         return View::create($user, Response::HTTP_OK);
     }
@@ -146,13 +156,12 @@ class UserController extends FOSRestController
      * @ParamConverter("user", class="App:User")
      *
      * @param User $user
-     * @param UserService $service
      *
      * @return View
      */
-    public function blockUserAction(User $user, UserService $service): View
+    public function blockUserAction(User $user): View
     {
-        $service->blockUser($user);
+        $this->userService->blockUser($user);
 
         return View::create($user, Response::HTTP_OK);
     }
@@ -164,13 +173,12 @@ class UserController extends FOSRestController
      * @ParamConverter("user", class="App:User")
      *
      * @param User $user
-     * @param UserService $service
      *
      * @return View
      */
-    public function unblockUserAction(User $user, UserService $service): View
+    public function unblockUserAction(User $user): View
     {
-        $service->unblockUser($user);
+        $this->userService->unblockUser($user);
 
         return View::create($user, Response::HTTP_OK);
     }
@@ -182,13 +190,12 @@ class UserController extends FOSRestController
      * @ParamConverter("user", class="App:User")
      *
      * @param User $user
-     * @param UserService $service
      *
      * @return View
      */
-    public function deleteAvatarAction(User $user, UserService $service): View
+    public function deleteAvatarAction(User $user): View
     {
-        $service->deleteUserAvatar($user);
+        $this->userService->deleteUserAvatar($user);
 
         return View::create($user, Response::HTTP_OK);
     }
@@ -200,13 +207,12 @@ class UserController extends FOSRestController
      * @ParamConverter("user", class="App:User")
      *
      * @param User $user
-     * @param UserService $service
      *
      * @return View
      */
-    public function deleteUserAction(User $user, UserService $service): View
+    public function deleteUserAction(User $user): View
     {
-        $service->deleteUser($user);
+        $this->userService->deleteUser($user);
 
         return View::create($user, Response::HTTP_OK);
     }

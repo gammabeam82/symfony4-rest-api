@@ -22,18 +22,32 @@ use Symfony\Component\Routing\Annotation\Route;
 class CategoryController extends FOSRestController
 {
     /**
+     * @var CategoryService
+     */
+    private $categoryService;
+
+    /**
+     * CategoryController constructor.
+     *
+     * @param CategoryService $categoryService
+     */
+    public function __construct(CategoryService $categoryService)
+    {
+        $this->categoryService = $categoryService;
+    }
+
+    /**
      * @IsGranted("ROLE_ADMIN")
      * @Rest\Post("/", name="create_category")
      * @Rest\View(serializerGroups={"category_details"})
      *
      * @param CreateCategoryRequest $categoryRequest
-     * @param CategoryService $service
      *
      * @return View
      */
-    public function createCategoryAction(CreateCategoryRequest $categoryRequest, CategoryService $service): View
+    public function createCategoryAction(CreateCategoryRequest $categoryRequest): View
     {
-        $category = $service->create($categoryRequest);
+        $category = $this->categoryService->create($categoryRequest);
 
         return View::create($category, Response::HTTP_CREATED);
     }
@@ -46,13 +60,12 @@ class CategoryController extends FOSRestController
      *
      * @param UpdateCategoryRequest $categoryRequest
      * @param Category $category
-     * @param CategoryService $service
      *
      * @return View
      */
-    public function updateCategoryAction(UpdateCategoryRequest $categoryRequest, Category $category, CategoryService $service): View
+    public function updateCategoryAction(UpdateCategoryRequest $categoryRequest, Category $category): View
     {
-        $service->update($categoryRequest, $category);
+        $this->categoryService->update($categoryRequest, $category);
 
         return View::create($category, Response::HTTP_OK);
     }
@@ -78,13 +91,12 @@ class CategoryController extends FOSRestController
      * @ParamConverter("category", class="App:Category")
      *
      * @param Category $category
-     * @param CategoryService $service
      *
      * @return View
      */
-    public function deleteCategoryAction(Category $category, CategoryService $service): View
+    public function deleteCategoryAction(Category $category): View
     {
-        $service->delete($category);
+        $this->categoryService->delete($category);
 
         return View::create($category, Response::HTTP_OK);
     }
