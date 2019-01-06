@@ -2,7 +2,6 @@
 
 namespace App\Entity;
 
-use App\Request\Tag\CreateTagRequest;
 use App\Request\Tag\UpdateTagRequest;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -46,19 +45,6 @@ class Tag
     public function __construct()
     {
         $this->posts = new ArrayCollection();
-    }
-
-    /**
-     * @param CreateTagRequest $dto
-     *
-     * @return Tag
-     */
-    public static function createFromDTO(CreateTagRequest $dto): self
-    {
-        $tag = new Tag();
-        $tag->setName($dto->name);
-
-        return $tag;
     }
 
     /**

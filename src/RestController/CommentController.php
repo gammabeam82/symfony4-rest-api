@@ -4,6 +4,7 @@ namespace App\RestController;
 
 use App\Entity\Comment;
 use App\Entity\Post;
+use App\Factory\CommentFactory;
 use App\Request\Comment\CreateCommentRequest;
 use App\Request\Comment\UpdateCommentRequest;
 use App\Security\Actions;
@@ -49,7 +50,7 @@ class CommentController extends FOSRestController
      */
     public function createPostCommentAction(CreateCommentRequest $commentRequest, Post $post): View
     {
-        $this->denyAccessUnlessGranted(Actions::CREATE, new Comment());
+        $this->denyAccessUnlessGranted(Actions::CREATE, CommentFactory::create());
 
         $comment = $this->commentService->create($commentRequest, $post);
 

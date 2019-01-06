@@ -4,6 +4,7 @@ namespace App\RestController;
 
 use App\Entity\Post;
 use App\Entity\PostImage;
+use App\Factory\PostFactory;
 use App\Repository\PostRepository;
 use App\Request\Post\CreatePostRequest;
 use App\Request\Post\UpdatePostRequest;
@@ -48,7 +49,7 @@ class PostController extends FOSRestController
      */
     public function createPostAction(CreatePostRequest $postRequest): View
     {
-        $this->denyAccessUnlessGranted(Actions::CREATE, new Post());
+        $this->denyAccessUnlessGranted(Actions::CREATE, PostFactory::create());
 
         $post = $this->postService->create($postRequest);
 

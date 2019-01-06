@@ -5,7 +5,6 @@ namespace App\Entity;
 use App\Request\User\ChangeAvatarRequest;
 use App\Request\User\ChangeEmailRequest;
 use App\Request\User\ChangePasswordRequest;
-use App\Request\User\CreateUserRequest;
 use App\Security\Roles;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -113,28 +112,6 @@ class User extends BaseUser
         $this->banned = false;
         $this->posts = new ArrayCollection();
         $this->comments = new ArrayCollection();
-    }
-
-    /**
-     * @param CreateUserRequest $dto
-     *
-     * @return User
-     */
-    public static function createFromDTO(CreateUserRequest $dto): self
-    {
-        $user = new User;
-
-        $user
-            ->setUsername($dto->username)
-            ->setEmail($dto->email)
-            ->setPlainPassword($dto->password)
-            ->addRole(Roles::ROLE_USER)
-            ->setImage($dto->image)
-            ->setCreatedAt($dto->createdAt)
-            ->setUpdatedAt($dto->updatedAt)
-            ->setEnabled(true);
-
-        return $user;
     }
 
     /**

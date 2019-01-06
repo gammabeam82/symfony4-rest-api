@@ -3,6 +3,7 @@
 namespace App\Service;
 
 use App\Entity\Tag;
+use App\Factory\TagFactory;
 use App\Request\Tag\CreateTagRequest;
 use App\Request\Tag\UpdateTagRequest;
 use Doctrine\ORM\EntityManagerInterface;
@@ -31,7 +32,7 @@ class TagService
      */
     public function create(CreateTagRequest $dto): Tag
     {
-        $tag = Tag::createFromDTO($dto);
+        $tag = TagFactory::createFromDTO($dto);
 
         $this->em->persist($tag);
         $this->em->flush();

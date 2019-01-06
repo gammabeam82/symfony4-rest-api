@@ -2,7 +2,6 @@
 
 namespace App\Entity;
 
-use App\Request\Comment\CreateCommentRequest;
 use App\Request\Comment\UpdateCommentRequest;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
@@ -62,23 +61,6 @@ class Comment
      * @ORM\Column(type="text")
      */
     private $message;
-
-    /**
-     * @param CreateCommentRequest $dto
-     *
-     * @return Comment
-     */
-    public static function createFromDTO(CreateCommentRequest $dto): self
-    {
-        $comment = new Comment();
-
-        $comment
-            ->setCreatedAt($dto->createdAt)
-            ->setUpdatedAt($dto->updatedAt)
-            ->setMessage($dto->message);
-
-        return $comment;
-    }
 
     /**
      * @param UpdateCommentRequest $dto

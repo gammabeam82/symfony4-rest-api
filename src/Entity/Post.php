@@ -2,7 +2,6 @@
 
 namespace App\Entity;
 
-use App\Request\Post\CreatePostRequest;
 use App\Request\Post\UpdatePostRequest;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -151,28 +150,6 @@ class Post
         $this->tags = new ArrayCollection();
         $this->images = new ArrayCollection();
         $this->comments = new ArrayCollection();
-    }
-
-    /**
-     * @param CreatePostRequest $dto
-     *
-     * @return Post
-     */
-    public static function createFromDTO(CreatePostRequest $dto): Post
-    {
-        $post = new Post();
-
-        $post
-            ->setTitle($dto->title)
-            ->setSummary($dto->summary)
-            ->setCreatedAt($dto->createdAt)
-            ->setUpdatedAt($dto->updatedAt)
-            ->setArticle($dto->article)
-            ->setCategory($dto->category)
-            ->setTags($dto->tags)
-            ->setImages($dto->images);
-
-        return $post;
     }
 
     /**

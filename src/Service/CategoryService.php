@@ -3,6 +3,7 @@
 namespace App\Service;
 
 use App\Entity\Category;
+use App\Factory\CategoryFactory;
 use App\Request\Category\CreateCategoryRequest;
 use App\Request\Category\UpdateCategoryRequest;
 use Doctrine\ORM\EntityManagerInterface;
@@ -31,7 +32,7 @@ class CategoryService
      */
     public function create(CreateCategoryRequest $dto): Category
     {
-        $category = Category::createFromDTO($dto);
+        $category = CategoryFactory::createFromDTO($dto);
 
         $this->em->persist($category);
         $this->em->flush();

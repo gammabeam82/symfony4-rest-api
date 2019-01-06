@@ -5,6 +5,7 @@ namespace App\Service;
 use App\Entity\Post;
 use App\Entity\PostImage;
 use App\Entity\User;
+use App\Factory\PostFactory;
 use App\Request\Post\CreatePostRequest;
 use App\Request\Post\UpdatePostRequest;
 use Doctrine\ORM\EntityManagerInterface;
@@ -44,7 +45,7 @@ class PostService
         /** @var User $user */
         $user = $this->tokenStorage->getToken()->getUser();
 
-        $post = Post::createFromDTO($dto);
+        $post = PostFactory::createFromDTO($dto);
         $post->setUser($user);
 
         $this->em->persist($post);

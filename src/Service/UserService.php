@@ -3,6 +3,7 @@
 namespace App\Service;
 
 use App\Entity\User;
+use App\Factory\UserFactory;
 use App\Repository\UserRepository;
 use App\Request\User\ChangeAvatarRequest;
 use App\Request\User\ChangeEmailRequest;
@@ -49,7 +50,7 @@ class UserService
      */
     public function createUser(CreateUserRequest $userRequest): User
     {
-        $user = User::createFromDTO($userRequest);
+        $user = UserFactory::createFromDTO($userRequest);
 
         $this->manager->updateUser($user);
 

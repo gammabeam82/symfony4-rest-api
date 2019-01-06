@@ -5,6 +5,7 @@ namespace App\Service;
 use App\Entity\Comment;
 use App\Entity\Post;
 use App\Entity\User;
+use App\Factory\CommentFactory;
 use App\Request\Comment\CreateCommentRequest;
 use App\Request\Comment\UpdateCommentRequest;
 use Doctrine\ORM\EntityManagerInterface;
@@ -44,7 +45,7 @@ class CommentService
         /** @var User $user */
         $user = $this->tokenStorage->getToken()->getUser();
 
-        $comment = Comment::createFromDTO($dto);
+        $comment = CommentFactory::createFromDTO($dto);
 
         $comment
             ->setPost($post)
