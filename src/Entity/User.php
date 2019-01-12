@@ -322,18 +322,6 @@ class User extends BaseUser
         return $this->banned;
     }
 
-    /**
-     * @param bool $banned
-     *
-     * @return User
-     */
-    public function setBanned(bool $banned): self
-    {
-        $this->banned = $banned;
-
-        return $this;
-    }
-
     public function block(): void
     {
         $this->banned = true;

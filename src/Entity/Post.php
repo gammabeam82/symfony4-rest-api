@@ -65,6 +65,27 @@ class Post
     private $createdAt;
 
     /**
+     * @var \DateTimeInterface
+     *
+     * @ORM\Column(type="datetime")
+     */
+    private $updatedAt;
+
+    /**
+     * @var int
+     *
+     * @Groups({"post_list", "post_details"})
+     */
+    private $createdAtTimestamp;
+
+    /**
+     * @var int
+     *
+     * @Groups({"post_details"})
+     */
+    private $updatedAtTimestamp;
+
+    /**
      * @var Category
      *
      * @Groups({"post_list", "post_details"})
@@ -99,13 +120,6 @@ class Post
     private $tags;
 
     /**
-     * @var \DateTimeInterface
-     *
-     * @ORM\Column(type="datetime")
-     */
-    private $updatedAt;
-
-    /**
      * @var string
      * @Groups({"post_list", "post_details"})
      * @ORM\Column(type="text")
@@ -127,20 +141,6 @@ class Post
      * @ORM\OneToMany(targetEntity="App\Entity\Comment", mappedBy="post", orphanRemoval=true)
      */
     private $comments;
-
-    /**
-     * @var int
-     *
-     * @Groups({"post_list", "post_details"})
-     */
-    private $createdAtTimestamp;
-
-    /**
-     * @var int
-     *
-     * @Groups({"post_details"})
-     */
-    private $updatedAtTimestamp;
 
     /**
      * Post constructor.
@@ -248,6 +248,26 @@ class Post
     }
 
     /**
+     * @return \DateTimeInterface|null
+     */
+    public function getUpdatedAt(): ?\DateTimeInterface
+    {
+        return $this->updatedAt;
+    }
+
+    /**
+     * @param \DateTimeInterface $updatedAt
+     *
+     * @return Post
+     */
+    public function setUpdatedAt(\DateTimeInterface $updatedAt): self
+    {
+        $this->updatedAt = $updatedAt;
+
+        return $this;
+    }
+
+    /**
      * @return Category|null
      */
     public function getCategory(): ?Category
@@ -338,26 +358,6 @@ class Post
             $this->tags->removeElement($tag);
             $tag->removePost($this);
         }
-
-        return $this;
-    }
-
-    /**
-     * @return \DateTimeInterface|null
-     */
-    public function getUpdatedAt(): ?\DateTimeInterface
-    {
-        return $this->updatedAt;
-    }
-
-    /**
-     * @param \DateTimeInterface $updatedAt
-     *
-     * @return Post
-     */
-    public function setUpdatedAt(\DateTimeInterface $updatedAt): self
-    {
-        $this->updatedAt = $updatedAt;
 
         return $this;
     }
